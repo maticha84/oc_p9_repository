@@ -1,0 +1,13 @@
+@charset "UTF-8"
+@font-face {
+    font-family: "ArimaKoshi";
+    src: url("../fonts/Arima/ArimaKoshi-Medium.otf");
+}
+body {
+    margin: 5% auto 5% auto;
+    background-image: url(../img/MAT_Bibliotheque_1.jpg);
+    background-repeat: no-repeat;
+}
+head{
+    height: 500px;
+}
