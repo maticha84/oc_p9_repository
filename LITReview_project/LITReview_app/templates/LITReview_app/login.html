@@ -1,0 +1,21 @@
+{% extends 'LITReview_app/base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <h1 class="page_title">{{ message }}</h1>
+    <div class="row justify-content-around">
+        <div class="col-2">
+            <button class="btn btn-secondary" type="submit">Create User</button>
+        </div>
+
+        <div class="col-2">
+            <label for="exampleFormControlInput1" class="form-label">Login</label>
+            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="username">
+            <label for="inputPassword" class="form-label">Password</label>
+            <input type="password" class="form-control" id="inputPassword">
+        </div>
+    </div>
+</div>
+
+{% endblock %}

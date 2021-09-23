@@ -11,3 +11,10 @@ body {
 head{
     height: 500px;
 }
+
+.page_title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}

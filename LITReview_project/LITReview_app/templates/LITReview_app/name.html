@@ -1,0 +1,11 @@
+{% extends 'LITReview_app/base.html' %}
+
+{% block content %}
+
+<form action="{% url 'name' %}" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Submit">
+</form>
+
+{% endblock %}
