@@ -1,4 +1,4 @@
-"""LITReview_project URL Configuration
+"""litreview URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.2/topics/http/urls/
@@ -16,10 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from LITReview_app import views
-
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('LITReview_app/', include('LITReview_app.urls')),
-    path('', views.index, name='index')
+    path('litapp', include('litapp.urls')),
 ]
