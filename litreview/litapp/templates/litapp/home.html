@@ -1,0 +1,8 @@
+{% extends 'litapp/base.html' %}
+{% block title %}
+    <h3 class="page_title">HOME</h3>
+{% endblock %}
+
+{% block content %}
+    <h3 class="page_title">Bienvenue {{ user.get_username }}</h3>
+{%endblock %}

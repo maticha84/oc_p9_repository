@@ -3,18 +3,50 @@
     font-family: "ArimaKoshi";
     src: url("../fonts/Arima/ArimaKoshi-Medium.otf");
 }
-body {
-    margin: 5% auto 5% auto;
-    background-image: url(../img/MAT_Bibliotheque_1.jpg);
-    background-repeat: no-repeat;
+body, html {
+    height: 100%;
 }
-head{
-    height: 500px;
+body {
+    background: url(../img/MAT_Bibliotheque_1.jpg) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
 }
 
+.main {
+    min-height: 100%;
+    overflow-x: scroll;
+    scroll-bar-width: thin;
+    position: relative;
+}
+
+.for_choice {
+    height: 420px;
+    overflow-y: scroll;
+    scroll-bar-width: thin;
+}
 .page_title {
     display: flex;
     align-items: center;
+    text-align: center;
     justify-content: center;
+    height: 50px;
+    border: 2px solid #582900;
+    background-color: #C8AD7F;
 
+}
+
+.col-center{
+    text-align: center;
+}
+
+.footer{
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    height: 50px;
+    border: 2px solid #582900;
+    background-color: #C8AD7F;
 }

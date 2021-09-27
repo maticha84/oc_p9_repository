@@ -15,8 +15,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic.base import RedirectView
+
+from litapp.views import index
+
+favicon_view = RedirectView.as_view(url='static/litapp/img/favicon.ico')
 
 urlpatterns = [
+    path('', index, name='index'),
     path('admin/', admin.site.urls),
-    path('litapp', include('litapp.urls')),
+    path('litapp/', include('litapp.urls')),
+    path('favicon.ico', favicon_view),
 ]

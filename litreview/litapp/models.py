@@ -1,11 +1,34 @@
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.conf import settings
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, BaseUserManager
+
+
+class ManageUser(BaseUserManager):
+    def create_user(self, username, password=None):
+        user = self.model(
+            username=username,
+        )
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
 
 
 class User(AbstractUser):
-    pass
+    username = models.CharField(
+        verbose_name='username',
+        max_length=100,
+        unique=True
+    )
+    is_active = models.BooleanField(default=True)
+    is_admin = models.BooleanField(default=False)
+
+    objects = ManageUser()
+
+    USERNAME_FIELDS = ('username',)
+
+    def __str__(self):
+        return self.username
 
 
 class Ticket(models.Model):

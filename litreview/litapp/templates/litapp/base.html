@@ -9,12 +9,18 @@
         <link rel="stylesheet" type="text/css" href="{% static 'litapp/css/bootstrap.min.css' %}" />
         <link rel="stylesheet" type="text/css" href="{% static 'litapp/css/style.css' %}" />
     </head>
-    <header>
-        <h1>{% block title %}{% endblock %}</h1>
-    </header>
     <body>
-    <p>{% block content %}{% endblock %}</p>
+        <div class="main">
+            <header>
+                {% block title %}{% endblock %}
+            </header>
+
+                {% block content %}{% endblock %}
+
+            <footer class="fixed-bottom footer">
+                 {% block footer %}{% endblock %}
+                 <h6>Copyright &copy Létitia CARNICELLI pour LITReview</h6>
+            </footer>
+        </div>
     </body>
-    <footer>
-         <h1>{% block footer %}{% endblock %}</h1>
-    </footer>
+</html>
