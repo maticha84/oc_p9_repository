@@ -7,11 +7,23 @@
 {% block content %}
 
 {% if form.errors %}
-
+    <p>Le nom d'utilisateur existe déjà et/ou n'est pas correct. Merci de recommencer.</p>
 {% endif %}
 
-<form action="" method="post" class="form container">
+<form method="post" class="form container">
     {% csrf_token %}
+
+    {{ utilisateur }}
+    <input type="text" class="form-control" name="new_username" placeholder="Nom d'utilisateur"/>
+    <br>
+    <input type="password" class="form-control" name="password1" placeholder="Mot de passe"/>
+    <br>
+    <input type="password" class="form-control"  name="password2" placeholder="Confirmation mot de passe"/>
+    <br>
+    <h5 class="small">{{ echec }}</h5>
+    <br>
+    <button class="btn btn-secondary" value="create" type="submit" >Créer le compte</button>
+
 </form>
 
 {% endblock %}

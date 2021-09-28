@@ -21,13 +21,16 @@
             <br>
             <form method="POST">
                 {% csrf_token %}
-                <input type="text" class="form-control" id="exampleFormControlInput1" name="username" placeholder="Nom d'utilisateur">
+                {% if user.is_active == False %}
+                <p class="small"> Veuillez vous connecter. </p>
+                {% endif %}
+                <input type="text" class="form-control" id="exampleFormControlInput1" name="username" placeholder="Nom d'utilisateur"/>
                 <br>
-                <input type="password" class="form-control" id="inputPassword" name="password" placeholder="Mot de passe">
+                <input type="password" class="form-control" id="inputPassword" name="password" placeholder="Mot de passe"/>
                 <br>
-                {{ login_echec }}
+                <p class="small">{{ login_echec }}</p>
                 <br>
-                <button class="btn btn-secondary" id="connexion" type="submit" >Se connecter</button>
+                <button class="btn btn-secondary" value="login" type="submit" >Se connecter</button>
             </form>
         </div>
     </div>

@@ -5,4 +5,7 @@
 
 {% block content %}
     <h3 class="page_title">Bienvenue {{ user.get_username }}</h3>
+    <a href="{% url 'logout' %}">
+        <button class="btn btn-secondary" value="logout" type="submit" >Se déconnecter</button>
+    </a>
 {%endblock %}
