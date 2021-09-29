@@ -31,7 +31,8 @@ body {
     align-items: center;
     text-align: center;
     justify-content: center;
-    height: 50px;
+    height: 80px;
+    width: 100%;
     border: 2px solid #582900;
     background-color: #C8AD7F;
 
@@ -39,6 +40,8 @@ body {
 
 .col-center{
     text-align: center;
+    float: none;
+    margin: 0 auto;
 }
 
 .footer{

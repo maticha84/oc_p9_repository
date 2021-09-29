@@ -1,7 +1,7 @@
 {% extends 'litapp/base.html' %}
 
 {% block title %}
-    <h3 class="page_title">{{ message }}</h3>
+    <h3>{{ message }}</h3>
 {% endblock %}
 
 {% block content %}
@@ -28,7 +28,7 @@
                 <br>
                 <input type="password" class="form-control" id="inputPassword" name="password" placeholder="Mot de passe"/>
                 <br>
-                <p class="small">{{ login_echec }}</p>
+                <p class="text-light bg-danger small fw-bold fst-italic">{{ login_echec }}</p>
                 <br>
                 <button class="btn btn-secondary" value="login" type="submit" >Se connecter</button>
             </form>

@@ -1,7 +1,7 @@
 {% extends 'litapp/base.html' %}
 
 {% block title %}
-    <h3 class="page_title">{{ message }}</h3>
+    <h3>{{ message }}</h3>
 {% endblock %}
 
 {% block content %}
@@ -11,19 +11,39 @@
 {% endif %}
 
 <form method="post" class="form container">
-    {% csrf_token %}
+    <div class="container">
+        <div class="row">
 
-    {{ utilisateur }}
-    <input type="text" class="form-control" name="new_username" placeholder="Nom d'utilisateur"/>
-    <br>
-    <input type="password" class="form-control" name="password1" placeholder="Mot de passe"/>
-    <br>
-    <input type="password" class="form-control"  name="password2" placeholder="Confirmation mot de passe"/>
-    <br>
-    <h5 class="small">{{ echec }}</h5>
-    <br>
-    <button class="btn btn-secondary" value="create" type="submit" >Créer le compte</button>
-
+                <div class="col-8 col-center" >
+                    <br><br>
+                        {% csrf_token %}
+                        <input type="text" class="form-control" name="new_username" placeholder="Nom d'utilisateur"/>
+                        <br>
+                        <input type="password" class="form-control" name="password1" placeholder="Mot de passe"/>
+                        <br>
+                        <input type="password" class="form-control"  name="password2" placeholder="Confirmation mot de passe"/>
+                        <br>
+                </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-4 col-center">
+                <a href="{% url 'login' %}"><button class="btn btn-secondary" type="button" >Retour</button></a>
+            </div>
+            <div class="col-4 col-center">
+                <button class="btn btn-secondary" value="create" type="submit" >S'inscrire</button>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-8 col-center">
+                <br>
+                <h5 class="text-light bg-danger small fw-bold fst-italic">{{ echec }}</h5>
+                <h5 class="text-dark small fw-bold fst-italic">{{ success }}</h5>
+            </div>
+        </div>
+    </div>
 </form>
-
 {% endblock %}

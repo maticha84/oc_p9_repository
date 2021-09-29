@@ -44,7 +44,7 @@ def logout_view(request):
 
 def new_account(request):
     title = "Création d'un compte"
-    echec = ""
+    success = ""
 
     if request.POST:
         username = request.POST.get('new_username')
@@ -78,16 +78,17 @@ def new_account(request):
             return render(request, 'litapp/new_account.html', context)
 
         user = User.objects.create_user(username=username, password=password1)
-        echec = f"Création du compte {user.username} effectuée. Vous pouvez à présent vous connecter."
+
+        success = f"Création du compte {user.username} effectuée. Vous pouvez à présent vous connecter."
     context = {
         'message': title,
-        'echec': echec,
+        'success': success,
     }
 
     return render(request, 'litapp/new_account.html', context)
 
 
-@login_required(login_url='/litapp/')
+@login_required(login_url='/litapp/login.html')
 def home_view(request):
     title = "Bienvenue à la maison"
     context = {

@@ -1,11 +1,34 @@
 {% extends 'litapp/base.html' %}
 {% block title %}
-    <h3 class="page_title">HOME</h3>
+<div class="container">
+    <div class="row">
+
+        <div class="col-6 right">
+            <h3>Tableau de bord</h3>
+            <p class="fst-italic">Bienvenue {{ user.get_username }}</p>
+        </div>
+        <div class="col-5 left">
+            <a href="#">Flux</a>
+            <a href="#">Posts</a>
+            <a href="#">Abonnements</a>
+            <a href="{% url 'logout' %}" type="submit">Se déconnecter</a>
+        </div>
+
+    </div>
+</div>
+
 {% endblock %}
 
 {% block content %}
-    <h3 class="page_title">Bienvenue {{ user.get_username }}</h3>
-    <a href="{% url 'logout' %}">
-        <button class="btn btn-secondary" value="logout" type="submit" >Se déconnecter</button>
-    </a>
+<br><br>
+    <div class="container">
+        <div class="row ">
+            <div class="col-4 col-center">
+                <button class="btn btn-secondary" type="button" >Demander une critique</button>
+            </div>
+            <div class="col-4 col-center">
+                <button class="btn btn-secondary" type="button" >Créer une critique</button>
+            </div>
+        </div>
+    </div>
 {%endblock %}
