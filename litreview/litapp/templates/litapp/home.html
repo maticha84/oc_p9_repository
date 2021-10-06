@@ -7,7 +7,7 @@
             <h3>Tableau de bord</h3>
             <p class="fst-italic">Bienvenue {{ user.get_username }}</p>
         </div>
-        <div class="col-5 left">
+        <div class="col-6 left navbar">
             <a href="#">Flux</a>
             <a href="#">Posts</a>
             <a href="#">Abonnements</a>
@@ -21,14 +21,27 @@
 
 {% block content %}
 <br><br>
-    <div class="container">
-        <div class="row ">
-            <div class="col-4 col-center">
+<div class="container">
+    <div class="row ">
+        <div class="col-4 col-center">
+            <a href="{% url 'ticket_create' %}">
                 <button class="btn btn-secondary" type="button" >Demander une critique</button>
-            </div>
-            <div class="col-4 col-center">
-                <button class="btn btn-secondary" type="button" >Créer une critique</button>
-            </div>
+            </a>
+        </div>
+        <div class="col-4 col-center">
+            <button class="btn btn-secondary" type="button" >Créer une critique</button>
         </div>
     </div>
+</div>
+<div class="container">
+    <!--
+    {% for post in posts %}
+        {% if post.content_type == 'TICKET' %}
+            {% include 'ticket_snippet.html' %}
+        {% elif post.content_type == 'REVIEW' %}
+            {% include 'review_snippet.html' %}
+        {% endif %}
+    {% endfor %}
+    -->
+</div>
 {%endblock %}

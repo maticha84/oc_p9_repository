@@ -1,11 +1,15 @@
 from django.shortcuts import render
+from django.db.models import CharField, Value
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.password_validation import validate_password
+from itertools import chain
 
 from .models import User
+from .forms import TicketForm
+
 
 def index(request):
     title = "Bienvenue sur le serveur LitReview - cliquez sur l'application qui vous intéresse"
@@ -16,25 +20,25 @@ def index(request):
 
 
 def login_view(request):
-        title = "Page de login"
-        login_echec = ""
+    title = "Page de login"
+    login_echec = ""
 
-        if request.POST:
-            username = request.POST.get('username')
-            password = request.POST.get('password')
-            user = authenticate(username=username, password=password)
+    if request.POST:
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(username=username, password=password)
 
-            if user is not None and user.is_active:
-                login(request, user)
-                return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
-            else:
-                login_echec = "Nom d'utilisateur et/ou Mdp incorrect."
+        if user is not None and user.is_active:
+            login(request, user)
+            return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
+        else:
+            login_echec = "Nom d'utilisateur et/ou Mdp incorrect."
 
-        context = {
-            'message': title,
-            'login_echec': login_echec,
-        }
-        return render(request, 'litapp/login.html', context)
+    context = {
+        'message': title,
+        'login_echec': login_echec,
+    }
+    return render(request, 'litapp/login.html', context)
 
 
 def logout_view(request):
@@ -91,8 +95,54 @@ def new_account(request):
 @login_required(login_url='/litapp/login.html')
 def home_view(request):
     title = "Bienvenue à la maison"
+    """
+    reviews = get_users_viewable_reviews(request.user)
+    # returns queryset of reviews
+    reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
+
+    tickets = get_users_viewable_tickets(request.user)
+    # returns queryset of tickets
+    tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
+
+    # combine and sort the two types of posts
+    posts = sorted(
+        chain(reviews, tickets),
+        key=lambda post: post.time_created,
+        reverse=True
+    )
+    """
     context = {
-        'message': title
+        'message': title,
+        # 'posts':posts
     }
 
     return render(request, 'litapp/home.html', context)
+
+
+@login_required(login_url='/litapp/login.html')
+def ticket_create(request):
+    title_page = "Créer un ticket"
+
+    if request.method == 'POST':
+
+        ticket_form = TicketForm(request.POST, request.FILES)
+        ticket = ticket_form.save(commit=False)
+        ticket.user = request.user
+        if ticket_form.is_valid():
+            title = ticket_form.cleaned_data['title']
+            description = ticket_form.cleaned_data['description']
+            image = ticket_form.cleaned_data['image']
+            context = {
+                'message': title_page,
+                'ticket_form': ticket_form,
+            }
+
+            ticket.save()
+            return render(request, 'litapp/ticket.html', context)
+    else:
+        ticket_form = TicketForm()
+    context = {
+        'message': title_page,
+        'ticket_form': ticket_form,
+    }
+    return render(request, 'litapp/ticket.html', context)
