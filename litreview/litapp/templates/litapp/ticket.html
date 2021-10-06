@@ -16,7 +16,7 @@
                     {{ ticket_form.description }}
                     <label for="{{ ticket_form.image.id_for_label }}" class="form-control bg-secondary text-light">Image à télécharger</label>
                     {{ ticket_form.image }}
-                    <p>
+                    <p style="display:None">
                         <select id="user_id" name="user">
                             <option value="1">{{ user.get_username }}</option>
                         </select>
