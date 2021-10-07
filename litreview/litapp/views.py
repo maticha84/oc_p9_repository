@@ -1,13 +1,11 @@
 from django.shortcuts import render
-from django.db.models import CharField, Value
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.password_validation import validate_password
-from itertools import chain
 
-from .models import User
+from .models import User, Ticket, Review, UserFollows
 from .forms import TicketForm
 
 
@@ -94,7 +92,7 @@ def new_account(request):
 
 @login_required(login_url='/litapp/login.html')
 def home_view(request):
-    title = "Bienvenue à la maison"
+    title_page = "Bienvenue à la maison"
     """
     reviews = get_users_viewable_reviews(request.user)
     # returns queryset of reviews
@@ -112,7 +110,7 @@ def home_view(request):
     )
     """
     context = {
-        'message': title,
+        'message': title_page,
         # 'posts':posts
     }
 
@@ -138,7 +136,7 @@ def ticket_create(request):
             }
 
             ticket.save()
-            return render(request, 'litapp/ticket.html', context)
+            return HttpResponseRedirect('posts.html')
     else:
         ticket_form = TicketForm()
     context = {
@@ -146,3 +144,16 @@ def ticket_create(request):
         'ticket_form': ticket_form,
     }
     return render(request, 'litapp/ticket.html', context)
+
+
+def posts_view(request):
+    title_page = "Vos posts"
+    tickets = Ticket.objects.filter(user=request.user).order_by('-time_created')
+    reviews = Review.objects.filter(user=request.user).order_by('-time_created')
+
+    context = {
+        'message': title_page,
+        'tickets': tickets,
+        'reviews': reviews,
+    }
+    return render(request, 'litapp/posts.html', context)

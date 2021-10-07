@@ -1,12 +1,17 @@
 from django import forms
-from django.db.models import CharField
 
 from .models import Ticket
 
 
 class TicketForm(forms.ModelForm):
+
     class Meta:
         model = Ticket
-        fields = ['title', 'description', 'image', 'user',]
+        fields = ['title', 'description', 'image', ]
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control'}),
+        }
+
 
 

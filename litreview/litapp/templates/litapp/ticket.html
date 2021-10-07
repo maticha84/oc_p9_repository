@@ -1,9 +1,24 @@
 {% extends 'litapp/base.html' %}
 {% block title %}
-    <h3 >{{ message }}</h3>
+<div class="container">
+    <div class="row">
+
+        <div class="col-6 right">
+            <h3 >{{ message }}</h3>
+        </div>
+        <div class="col-6 left navbar">
+            <a href="{% url 'home' %}">Flux</a>
+            <a href="{% url 'posts' %}">Posts</a>
+            <a href="#">Abonnements</a>
+            <a href="{% url 'logout' %}" type="submit">Se déconnecter</a>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block content %}
+
 <form method="post" class="form container" enctype="multipart/form-data">
     <div class="container">
         <div class="row">
@@ -15,24 +30,11 @@
                     <label for="{{ ticket_form.description.id_for_label }}" class="form-control bg-secondary text-light">Description</label>
                     {{ ticket_form.description }}
                     <label for="{{ ticket_form.image.id_for_label }}" class="form-control bg-secondary text-light">Image à télécharger</label>
-                    {{ ticket_form.image }}
-                    <p style="display:None">
-                        <select id="user_id" name="user">
-                            <option value="1">{{ user.get_username }}</option>
-                        </select>
-                    </p>
-                    <!--<p>{{ ticket_form.user }}</p>
-                    <input type="text" class="form-control" name="title" placeholder="Titre"/>
-                    <br>
-                    <textarea class="form-control" name="description" placeholder="Description"></textarea>
-                    <br>
-                    <div>
-                        <label for="image" class="btn btn-secondary">
-                            <input type="file" id="image" name="image" class="form-control" accept="image/*" />
-                            Télécharger une image
-                        </label>
+                    <div class="parent-upload">
+                        <button class="btn btn-secondary">Télécharger un fichier</button>
+                        {{ ticket_form.image }}
+                        <img id="image" width="100px" />
                     </div>
-                    -->
                     <br><br>
                 </div>
         </div>
@@ -50,4 +52,7 @@
         </div>
     </div>
 </form>
+
+{% load static %}
+<script type="text/javascript" src="{% static 'litapp/js/image.js' %}"></script>
 {% endblock %}

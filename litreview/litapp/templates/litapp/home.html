@@ -8,8 +8,8 @@
             <p class="fst-italic">Bienvenue {{ user.get_username }}</p>
         </div>
         <div class="col-6 left navbar">
-            <a href="#">Flux</a>
-            <a href="#">Posts</a>
+            <a href="{% url 'home' %}">Flux</a>
+            <a href="{% url 'posts' %}">Posts</a>
             <a href="#">Abonnements</a>
             <a href="{% url 'logout' %}" type="submit">Se déconnecter</a>
         </div>
@@ -34,6 +34,7 @@
     </div>
 </div>
 <div class="container">
+
     <!--
     {% for post in posts %}
         {% if post.content_type == 'TICKET' %}
