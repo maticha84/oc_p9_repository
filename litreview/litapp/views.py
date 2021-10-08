@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.password_validation import validate_password
 
 from .models import User, Ticket, Review, UserFollows
-from .forms import TicketForm
+from .forms import TicketForm, ReviewForm
 
 
 def index(request):
@@ -93,6 +93,8 @@ def new_account(request):
 @login_required(login_url='/litapp/login.html')
 def home_view(request):
     title_page = "Bienvenue à la maison"
+    tickets = Ticket.objects.order_by('-time_created')
+    reviews = Review.objects.order_by('-time_created')
     """
     reviews = get_users_viewable_reviews(request.user)
     # returns queryset of reviews
@@ -111,10 +113,68 @@ def home_view(request):
     """
     context = {
         'message': title_page,
-        # 'posts':posts
+        'tickets': tickets,
+        'reviews': reviews,
     }
 
     return render(request, 'litapp/home.html', context)
+
+
+@login_required(login_url='/litapp/login.html')
+def review_create(request):
+    title_page = "Créer une critique"
+
+    if request.method == 'POST':
+        ticket_form = TicketForm(request.POST, request.FILES)
+        ticket = ticket_form.save(commit=False)
+        ticket.user = request.user
+        if ticket_form.is_valid():
+            title = ticket_form.cleaned_data['title']
+            description = ticket_form.cleaned_data['description']
+            image = ticket_form.cleaned_data['image']
+            context = {
+                'message': title_page,
+                'ticket_form': ticket_form,
+            }
+
+            ticket.save()
+        else:
+            ticket_form = TicketForm()
+            review_form = ReviewForm()
+
+            context = {
+                'message': title_page,
+                'review_form': review_form,
+                'ticket_form': ticket_form,
+            }
+            return render(request, 'litapp/review.html', context)
+
+        # On traite la critique que si le ticket a été enregistré précédemment
+        review_form = ReviewForm(request.POST, request.FILES)
+        review = review_form.save(commit=False)
+        review.user = request.user
+        review.ticket = ticket
+        if review_form.is_valid():
+            rating = review_form.cleaned_data['rating']
+            headline = review_form.cleaned_data['headline']
+            body = review_form.cleaned_data['body']
+            context = {
+                'message': title_page,
+                'review_form': review_form,
+            }
+
+            review.save()
+            return HttpResponseRedirect('posts.html')
+    else:
+        ticket_form = TicketForm()
+        review_form = ReviewForm()
+
+    context = {
+        'message': title_page,
+        'review_form': review_form,
+        'ticket_form': ticket_form,
+    }
+    return render(request, 'litapp/review.html', context)
 
 
 @login_required(login_url='/litapp/login.html')
@@ -146,10 +206,12 @@ def ticket_create(request):
     return render(request, 'litapp/ticket.html', context)
 
 
+@login_required(login_url='/litapp/login.html')
 def posts_view(request):
     title_page = "Vos posts"
-    tickets = Ticket.objects.filter(user=request.user).order_by('-time_created')
-    reviews = Review.objects.filter(user=request.user).order_by('-time_created')
+    tickets = Ticket.objects.order_by('-time_created')
+
+    reviews = Review.objects.order_by('-time_created')
 
     context = {
         'message': title_page,

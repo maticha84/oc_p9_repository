@@ -29,20 +29,24 @@
             </a>
         </div>
         <div class="col-4 col-center">
-            <button class="btn btn-secondary" type="button" >Créer une critique</button>
+            <a href="{% url 'review_create' %}">
+                <button class="btn btn-secondary" type="button" >Créer une critique</button>
+            </a>
         </div>
     </div>
 </div>
 <div class="container">
 
-    <!--
-    {% for post in posts %}
-        {% if post.content_type == 'TICKET' %}
-            {% include 'ticket_snippet.html' %}
-        {% elif post.content_type == 'REVIEW' %}
-            {% include 'review_snippet.html' %}
+    <br><br>
+    {% for ticket in tickets %}
+        {% if ticket.review_of.all %}
+            {% include 'litapp/review_view.html' %}
+            <br>
+        {% else %}
+            {% include 'litapp/ticket_view.html' %}
+            <br>
         {% endif %}
+
     {% endfor %}
-    -->
 </div>
 {%endblock %}

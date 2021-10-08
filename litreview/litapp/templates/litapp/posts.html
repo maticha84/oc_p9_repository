@@ -16,18 +16,20 @@
 </div>
 {% endblock %}
 
-
-
-
 {% block content %}
-
+<br><br>
 {% for ticket in tickets %}
-    {% if ticket.review %}
-        <div class="col-6 col-center card-body">
-            {{ review.title }}
-        </div>
-    {% else %}
+    {% for review in reviews %}
+        {% if ticket.user == user or review.user == user %}
+            {% if review.ticket == ticket %}
+                {% include 'litapp/review_view.html' %}
+                <br>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+    {% if ticket.user == user %}
         {% include 'litapp/ticket_view.html' %}
+        <br>
     {% endif %}
 {% endfor %}
 
