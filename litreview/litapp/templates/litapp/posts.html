@@ -19,14 +19,41 @@
 {% block content %}
 <br><br>
 {% for post in posts %}
-    {% if post.user == user or post.ticket.user == user %}
-        {% if post.content_type == 'REVIEW' %}
-            {% include 'litapp/review_view.html' %}
-            <br>
-        {% elif post.content_type == 'TICKET' %}
-            {% include 'litapp/ticket_view.html' %}
-            <br>
-        {% endif %}
+    {% if post.content_type == 'REVIEW' and post.user == user %}
+        <div class="container card-body border border-dark bg-light">
+        {% include 'litapp/review_view.html' %}
+            <div class="row ">
+                <div class="col-4 col-center">
+                    <a href="#">
+                        <button class="btn btn-secondary" type="button" >Modifier Critique</button>
+                    </a>
+                </div>
+                <div class="col-4 col-center">
+                    <a href="#">
+                        <button class="btn btn-secondary" type="button" >Supprimer Critique</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <br>
+    {% elif post.content_type == 'TICKET' and post.user == user %}
+        <div class="container card-body border border-dark bg-light">
+        {% include 'litapp/ticket_view.html' %}
+            <div class="row ">
+                <div class="col-4 col-center">
+                    <a href="{% url 'ticket_change' ticket_id=post.id %}">
+                        <button class="btn btn-secondary" type="button" >Modifier Ticket</button>
+                    </a>
+                </div>
+                <div class="col-4 col-center">
+                    <a href="#">
+                        <button class="btn btn-secondary" type="button" >Supprimer Ticket</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <br>
     {% endif %}
 {% endfor %}
 

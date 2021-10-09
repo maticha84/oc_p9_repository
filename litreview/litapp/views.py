@@ -136,10 +136,6 @@ def review_create(request):
             title = ticket_form.cleaned_data['title']
             description = ticket_form.cleaned_data['description']
             image = ticket_form.cleaned_data['image']
-            context = {
-                'message': title_page,
-                'ticket_form': ticket_form,
-            }
 
             ticket.save()
         else:
@@ -162,10 +158,6 @@ def review_create(request):
             rating = review_form.cleaned_data['rating']
             headline = review_form.cleaned_data['headline']
             body = review_form.cleaned_data['body']
-            context = {
-                'message': title_page,
-                'review_form': review_form,
-            }
 
             review.save()
             return HttpResponseRedirect('posts.html')
@@ -196,11 +188,6 @@ def review_response(request, ticket_id):
             rating = review_form.cleaned_data['rating']
             headline = review_form.cleaned_data['headline']
             body = review_form.cleaned_data['body']
-            context = {
-                'message': title_page,
-                'review_form': review_form,
-            }
-
             review.save()
             return HttpResponseRedirect('/litapp/posts.html')
     else:
@@ -240,6 +227,40 @@ def ticket_create(request):
     context = {
         'message': title_page,
         'ticket_form': ticket_form,
+    }
+    return render(request, 'litapp/ticket.html', context)
+
+
+@login_required(login_url='/litapp/login.html')
+def ticket_change(request, ticket_id):
+    title_page = f"Modification du ticket {ticket_id}"
+    ticket = get_object_or_404(Ticket, pk=ticket_id)
+    ticket_data = {
+        'id': ticket.id,
+        'title': ticket.title,
+        'description': ticket.description,
+        'image': ticket.image,
+        'user': ticket.user,
+        'time_created': ticket.time_created
+    }
+    if request.method == 'POST':
+
+        ticket_form = TicketForm(request.POST, request.FILES)
+        if ticket_form.is_valid():
+            ticket.title = ticket_form.cleaned_data['title']
+            ticket.description = ticket_form.cleaned_data['description']
+            if ticket_form.cleaned_data['image']:
+                ticket.image = ticket_form.cleaned_data['image']
+
+            ticket.save()
+            return HttpResponseRedirect('/litapp/posts.html')
+    else:
+        ticket_form = TicketForm(ticket_data)
+
+    context = {
+        'message': title_page,
+        'ticket_form': ticket_form,
+        'ticket': ticket
     }
     return render(request, 'litapp/ticket.html', context)
 

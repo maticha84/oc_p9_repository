@@ -1,4 +1,4 @@
-<div class="container card-body border border-dark bg-light">
+
     <div class="row m-5 p-5 justify-content-around border border-dark bg-secondary text-light">
         <div class="col-6">
             <p class="border-bottom border-light"> {{ post.user }} a publié une critique </p>
@@ -10,6 +10,8 @@
         </div>
 
     </div>
-    {% include 'litapp/ticket_view.html' %}
+    <div class="container card-body border border-dark bg-light">
+        {% include 'litapp/ticket_view.html' %}
+    </div>
 
-</div>
+

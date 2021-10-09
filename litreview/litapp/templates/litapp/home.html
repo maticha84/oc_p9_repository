@@ -40,11 +40,25 @@
     <br><br>
     {% for post in posts %}
         {% if post.content_type == 'REVIEW' %}
+            <div class="container card-body border border-dark bg-light">
             {% include 'litapp/review_view.html' %}
+            </div>
             <br>
         {% elif post.content_type == 'TICKET' and post.review_of.all.count == 0 %}
-            {% include 'litapp/ticket_view.html' %}
+            <div class="container card-body border border-dark bg-light">
+                {% include 'litapp/ticket_view.html' %}
+                {% if post.review_of.all.count == 0 %}
+                <div class="row justify-content-end bg-light">
+                    <div class="col-3">
+                    <a href="{% url 'review_response' ticket_id=post.id %}">
+                        <button class="btn btn-secondary" type="button" >Créer une critique</button>
+                    </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
             <br>
+
         {% endif %}
     {% endfor %}
 </div>

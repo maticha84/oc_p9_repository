@@ -33,7 +33,12 @@
                     <div class="parent-upload">
                         <button class="btn btn-secondary">Télécharger un fichier</button>
                         {{ ticket_form.image }}
-                        <img id="image" width="100px" />
+                        {% if ticket.image %}
+                            <img src = "{{ ticket.image.url }}" id="image" width="100px" />
+                        {% else %}
+                            <img id="image" width="100px" />
+                        {% endif %}
+
                     </div>
                     <br><br>
                 </div>

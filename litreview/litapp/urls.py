@@ -12,4 +12,5 @@ urlpatterns = [
     path('posts.html', views.posts_view, name='posts'),
     path('review.html', views.review_create, name='review_create'),
     re_path(r'(?P<ticket_id>[0-9]+)/review_response.html', views.review_response, name='review_response'),
+    re_path(r'(?P<ticket_id>[0-9]+)/ticket_change.html', views.ticket_change, name='ticket_change'),
 ]
