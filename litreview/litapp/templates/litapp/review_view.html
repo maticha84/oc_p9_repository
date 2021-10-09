@@ -1,12 +1,12 @@
 <div class="container card-body border border-dark bg-light">
     <div class="row m-5 p-5 justify-content-around border border-dark bg-secondary text-light">
         <div class="col-6">
-            <p class="border-bottom border-light"> {{ ticket.review_of.all.last.user }} a publié une critique </p>
-            <p class="border-bottom border-light"> {{ ticket.review_of.all.last.headline }} {{ticket.review_of.all.last.rating}}</p>
-            <p class="border-bottom border-light"> {{ ticket.review_of.all.last.body }} </p>
+            <p class="border-bottom border-light"> {{ post.user }} a publié une critique </p>
+            <p class="border-bottom border-light"> {{ post.headline }} {{post.rating}}</p>
+            <p class="border-bottom border-light"> {{ post.body }} </p>
         </div>
         <div class="col-3 col-center">
-            <p class="small border rounded-pill border-light">{{ ticket.review_of.all.last.time_created|date:"H:i, d F Y" }}</p>
+            <p class="small border rounded-pill border-light">{{ post.time_created|date:"H:i, d F Y" }}</p>
         </div>
 
     </div>

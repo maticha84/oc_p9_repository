@@ -18,18 +18,15 @@
 
 {% block content %}
 <br><br>
-{% for ticket in tickets %}
-    {% for review in reviews %}
-        {% if ticket.user == user or review.user == user %}
-            {% if review.ticket == ticket %}
-                {% include 'litapp/review_view.html' %}
-                <br>
-            {% endif %}
+{% for post in posts %}
+    {% if post.user == user or post.ticket.user == user %}
+        {% if post.content_type == 'REVIEW' %}
+            {% include 'litapp/review_view.html' %}
+            <br>
+        {% elif post.content_type == 'TICKET' %}
+            {% include 'litapp/ticket_view.html' %}
+            <br>
         {% endif %}
-    {% endfor %}
-    {% if ticket.user == user %}
-        {% include 'litapp/ticket_view.html' %}
-        <br>
     {% endif %}
 {% endfor %}
 

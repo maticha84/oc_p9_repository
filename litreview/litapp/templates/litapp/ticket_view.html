@@ -1,24 +1,51 @@
+{% if post.ticket %}
 <div class="container card-body border border-dark bg-light">
     <div class="row m-5 p-5 justify-content-around border border-dark bg-secondary text-light">
         <div class="col-6">
-            <p class="border-bottom border-light"> {{ ticket.user }} a demandé une critique </p>
-            <p class="border-bottom border-light"> {{ ticket.title }}  </p>
-            <p> {{ ticket.description }} </p>
-            {% if ticket.image %}
-            <img src="{{ticket.image.url}}" width="100px" />
+            <p class="border-bottom border-light"> {{ post.ticket.user }} a demandé une critique </p>
+            <p class="border-bottom border-light"> {{ post.ticket.title }}  </p>
+            <p> {{ post.ticket.description }} </p>
+            {% if post.ticket.image %}
+            <img src="{{post.ticket.image.url}}" width="100px" />
             {% endif %}
         </div>
         <div class="col-3 col-center">
-            <p class="small border rounded-pill border-light">{{ ticket.time_created|date:"H:i, d F Y" }}</p>
+            <p class="small border rounded-pill border-light">{{ post.ticket.time_created|date:"H:i, d F Y" }}</p>
         </div>
     </div>
-    {% if ticket.review_of.all.count == 0 %}
+    {% if post.ticket.review_of.all.count == 0 %}
     <div class="row justify-content-end ">
         <div class="col-3">
-        <a href="{% url 'review_response' %}">
+        <a href="{% url 'review_response' ticket_id=post.ticket.id %}">
             <button class="btn btn-secondary" type="button" >Créer une critique</button>
         </a>
         </div>
     </div>
     {% endif %}
 </div>
+{% else %}
+<div class="container card-body border border-dark bg-light">
+    <div class="row m-5 p-5 justify-content-around border border-dark bg-secondary text-light">
+        <div class="col-6">
+            <p class="border-bottom border-light"> {{ post.user }} a demandé une critique </p>
+            <p class="border-bottom border-light"> {{ post.title }}  </p>
+            <p> {{ post.description }} </p>
+            {% if post.image %}
+            <img src="{{post.image.url}}" width="100px" />
+            {% endif %}
+        </div>
+        <div class="col-3 col-center">
+            <p class="small border rounded-pill border-light">{{ post.time_created|date:"H:i, d F Y" }}</p>
+        </div>
+    </div>
+    {% if post.review_of.all.count == 0 %}
+    <div class="row justify-content-end ">
+        <div class="col-3">
+        <a href="{% url 'review_response' ticket_id=post.id %}">
+            <button class="btn btn-secondary" type="button" >Créer une critique</button>
+        </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endif %}

@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, re_path
 
 from . import views
 
@@ -11,5 +11,5 @@ urlpatterns = [
     path('ticket.html', views.ticket_create, name='ticket_create'),
     path('posts.html', views.posts_view, name='posts'),
     path('review.html', views.review_create, name='review_create'),
-    path('review_response.html', views.review_create, name='review_response'),
+    re_path(r'(?P<ticket_id>[0-9]+)/review_response.html', views.review_response, name='review_response'),
 ]

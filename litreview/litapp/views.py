@@ -1,9 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.password_validation import validate_password
+from itertools import chain
+from django.db.models.fields import CharField
+from django.db.models import Value
 
 from .models import User, Ticket, Review, UserFollows
 from .forms import TicketForm, ReviewForm
@@ -95,12 +98,12 @@ def home_view(request):
     title_page = "Bienvenue à la maison"
     tickets = Ticket.objects.order_by('-time_created')
     reviews = Review.objects.order_by('-time_created')
-    """
-    reviews = get_users_viewable_reviews(request.user)
+
+    #reviews = get_users_viewable_reviews(request.user)
     # returns queryset of reviews
     reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
 
-    tickets = get_users_viewable_tickets(request.user)
+    #tickets = get_users_viewable_tickets(request.user)
     # returns queryset of tickets
     tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
 
@@ -110,11 +113,12 @@ def home_view(request):
         key=lambda post: post.time_created,
         reverse=True
     )
-    """
+
     context = {
         'message': title_page,
         'tickets': tickets,
         'reviews': reviews,
+        'posts': posts,
     }
 
     return render(request, 'litapp/home.html', context)
@@ -178,6 +182,40 @@ def review_create(request):
 
 
 @login_required(login_url='/litapp/login.html')
+def review_response(request, ticket_id):
+    ticket = get_object_or_404(Ticket, pk=ticket_id)
+    title_page = f"Vous répondez au ticket {ticket.title}"
+
+    if request.method == 'POST':
+        # On traite la critique que si le ticket a été enregistré précédemment
+        review_form = ReviewForm(request.POST, request.FILES)
+        review = review_form.save(commit=False)
+        review.user = request.user
+        review.ticket = ticket
+        if review_form.is_valid():
+            rating = review_form.cleaned_data['rating']
+            headline = review_form.cleaned_data['headline']
+            body = review_form.cleaned_data['body']
+            context = {
+                'message': title_page,
+                'review_form': review_form,
+            }
+
+            review.save()
+            return HttpResponseRedirect('/litapp/posts.html')
+    else:
+        review_form = ReviewForm()
+
+    context = {
+        'message': title_page,
+        'review_form': review_form,
+        'ticket': ticket,
+    }
+
+    return render(request, 'litapp/review_response.html', context)
+
+
+@login_required(login_url='/litapp/login.html')
 def ticket_create(request):
     title_page = "Créer un ticket"
 
@@ -210,12 +248,28 @@ def ticket_create(request):
 def posts_view(request):
     title_page = "Vos posts"
     tickets = Ticket.objects.order_by('-time_created')
-
     reviews = Review.objects.order_by('-time_created')
+
+    # reviews = get_users_viewable_reviews(request.user)
+    # returns queryset of reviews
+    reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
+
+    # tickets = get_users_viewable_tickets(request.user)
+    # returns queryset of tickets
+    tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
+
+    # combine and sort the two types of posts
+    posts = sorted(
+        chain(reviews, tickets),
+        key=lambda post: post.time_created,
+        reverse=True
+    )
 
     context = {
         'message': title_page,
         'tickets': tickets,
         'reviews': reviews,
+        'posts': posts,
     }
+
     return render(request, 'litapp/posts.html', context)

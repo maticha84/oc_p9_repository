@@ -38,15 +38,14 @@
 <div class="container">
 
     <br><br>
-    {% for ticket in tickets %}
-        {% if ticket.review_of.all %}
+    {% for post in posts %}
+        {% if post.content_type == 'REVIEW' %}
             {% include 'litapp/review_view.html' %}
             <br>
-        {% else %}
+        {% elif post.content_type == 'TICKET' and post.review_of.all.count == 0 %}
             {% include 'litapp/ticket_view.html' %}
             <br>
         {% endif %}
-
     {% endfor %}
 </div>
 {%endblock %}

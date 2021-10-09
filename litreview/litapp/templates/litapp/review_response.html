@@ -18,25 +18,38 @@
 {% endblock %}
 
 {% block content %}
-
-<form method="post" class="form container" enctype="multipart/form-data">
-    <br><br>
-
-<div class="container">
-    <label for="{{ review_form.headline.id_for_label }}" class="form-control bg-secondary text-light">Titre</label>
-    {{review_form.headline}}
-    <div class="container">
-        <div class="row bg-light">
-            <label for="{{ review_form.rating.id_for_label }}" class="form-control bg-secondary text-light">Note</label>
-            {% for radio in review_form.rating %}
-                <div class="col"> {{radio}}</div>
-            {% endfor %}
+<div class="container card-body border border-dark bg-light">
+    <div class="row m-5 p-5 justify-content-around border border-dark bg-secondary text-light">
+        <div class="col-6">
+            <p class="border-bottom border-light"> {{ ticket.user }} a demandé une critique </p>
+            <p class="border-bottom border-light"> {{ ticket.title }}  </p>
+            <p> {{ ticket.description }} </p>
+            {% if ticket.image %}
+            <img src="{{ticket.image.url}}" width="100px" />
+            {% endif %}
+        </div>
+        <div class="col-3 col-center">
+            <p class="small border rounded-pill border-light">{{ ticket.time_created|date:"H:i, d F Y" }}</p>
         </div>
     </div>
-    <label for="{{ review_form.body.id_for_label }}" class="form-control bg-secondary text-light">Commentaire</label>
-    {{review_form.body}}
 </div>
-    {% block review %}{% endblock %}
+<form method="post" class="form container" enctype="multipart/form-data">
+    <br><br>
+    {% csrf_token %}
+    <div class="container">
+        <label for="{{ review_form.headline.id_for_label }}" class="form-control bg-secondary text-light">Titre</label>
+        {{review_form.headline}}
+        <div class="container">
+            <div class="row bg-light">
+                <label for="{{ review_form.rating.id_for_label }}" class="form-control bg-secondary text-light">Note</label>
+                {% for radio in review_form.rating %}
+                    <div class="col"> {{radio}}</div>
+                {% endfor %}
+            </div>
+        </div>
+        <label for="{{ review_form.body.id_for_label }}" class="form-control bg-secondary text-light">Commentaire</label>
+        {{review_form.body}}
+    </div>
     <div class="container">
         <div class="row">
             <div class="col-6 col-center">
