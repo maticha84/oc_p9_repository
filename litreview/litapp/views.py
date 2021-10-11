@@ -221,7 +221,7 @@ def ticket_create(request):
             }
 
             ticket.save()
-            return HttpResponseRedirect('posts.html')
+            return HttpResponseRedirect('/litapp/posts/')
     else:
         ticket_form = TicketForm()
     context = {
@@ -253,7 +253,7 @@ def ticket_change(request, ticket_id):
                 ticket.image = ticket_form.cleaned_data['image']
 
             ticket.save()
-            return HttpResponseRedirect('/litapp/posts.html')
+            return HttpResponseRedirect('/litapp/posts/')
     else:
         ticket_form = TicketForm(ticket_data)
 
@@ -269,11 +269,8 @@ def ticket_change(request, ticket_id):
 def ticket_delete(request, ticket_id):
     ticket = get_object_or_404(Ticket, pk=ticket_id)
     ticket.delete()
-    message_delete = "Le ticket a été correctement supprimé"
-    context = {
-        'message_delete': message_delete }
 
-    return render(request, 'litapp/post.html', context)
+    return redirect('posts')
 
 
 @login_required(login_url='login')

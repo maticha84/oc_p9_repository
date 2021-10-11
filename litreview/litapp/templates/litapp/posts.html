@@ -17,8 +17,8 @@
 {% endblock %}
 
 {% block content %}
-<br><br>
-{% if message_delete %}{{ message_delete }}{% endif %}
+<br>{% if message_delete %}{{ message_delete }}{% endif %}<br>
+
 {% for post in posts %}
     {% if post.content_type == 'REVIEW' and post.user == user %}
         <div class="container card-body border border-dark bg-light">
