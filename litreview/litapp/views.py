@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
 from django.conf import settings
@@ -44,7 +44,7 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return HttpResponseRedirect(settings.LOGOUT_REDIRECT_URL)
+    return redirect('login')
 
 
 def new_account(request):
@@ -93,7 +93,7 @@ def new_account(request):
     return render(request, 'litapp/new_account.html', context)
 
 
-@login_required(login_url='/litapp/login.html')
+@login_required
 def home_view(request):
     title_page = "Bienvenue à la maison"
     tickets = Ticket.objects.order_by('-time_created')
@@ -124,7 +124,7 @@ def home_view(request):
     return render(request, 'litapp/home.html', context)
 
 
-@login_required(login_url='/litapp/login.html')
+@login_required
 def review_create(request):
     title_page = "Créer une critique"
 
@@ -173,7 +173,7 @@ def review_create(request):
     return render(request, 'litapp/review.html', context)
 
 
-@login_required(login_url='/litapp/login.html')
+@login_required
 def review_response(request, ticket_id):
     ticket = get_object_or_404(Ticket, pk=ticket_id)
     title_page = f"Vous répondez au ticket {ticket.title}"
@@ -202,7 +202,7 @@ def review_response(request, ticket_id):
     return render(request, 'litapp/review_response.html', context)
 
 
-@login_required(login_url='/litapp/login.html')
+@login_required
 def ticket_create(request):
     title_page = "Créer un ticket"
 
@@ -231,7 +231,7 @@ def ticket_create(request):
     return render(request, 'litapp/ticket.html', context)
 
 
-@login_required(login_url='/litapp/login.html')
+@login_required
 def ticket_change(request, ticket_id):
     title_page = f"Modification du ticket {ticket_id}"
     ticket = get_object_or_404(Ticket, pk=ticket_id)
@@ -265,7 +265,18 @@ def ticket_change(request, ticket_id):
     return render(request, 'litapp/ticket.html', context)
 
 
-@login_required(login_url='/litapp/login.html')
+@login_required
+def ticket_delete(request, ticket_id):
+    ticket = get_object_or_404(Ticket, pk=ticket_id)
+    ticket.delete()
+    message_delete = "Le ticket a été correctement supprimé"
+    context = {
+        'message_delete': message_delete }
+
+    return render(request, 'litapp/post.html', context)
+
+
+@login_required
 def posts_view(request):
     title_page = "Vos posts"
     tickets = Ticket.objects.order_by('-time_created')

@@ -18,6 +18,7 @@
 
 {% block content %}
 <br><br>
+{% if message_delete %}{{ message_delete }}{% endif %}
 {% for post in posts %}
     {% if post.content_type == 'REVIEW' and post.user == user %}
         <div class="container card-body border border-dark bg-light">
@@ -47,7 +48,8 @@
                     </a>
                 </div>
                 <div class="col-4 col-center">
-                    <a href="#">
+                    <a href="{% url 'ticket_delete' ticket_id=post.id %}" onclick="return confirm(
+                    'Etes-vous sûr de supprimer ce ticket?');">
                         <button class="btn btn-secondary" type="button" >Supprimer Ticket</button>
                     </a>
                 </div>
@@ -57,4 +59,7 @@
     {% endif %}
 {% endfor %}
 
+{% load static %}
+<script type="text/javascript" src="{% static 'litapp/js/confirmation.js' %}"></script>
 {% endblock %}
+
