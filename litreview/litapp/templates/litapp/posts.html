@@ -25,12 +25,13 @@
         {% include 'litapp/review_view.html' %}
             <div class="row ">
                 <div class="col-4 col-center">
-                    <a href="#">
+                    <a href="{% url 'review_change' review_id=post.id %}">
                         <button class="btn btn-secondary" type="button" >Modifier Critique</button>
                     </a>
                 </div>
                 <div class="col-4 col-center">
-                    <a href="#">
+                    <a href="{% url 'review_delete' review_id=post.id %}" onclick="return confirm(
+                    'Etes-vous sûr de supprimer cette critique?');">
                         <button class="btn btn-secondary" type="button" >Supprimer Critique</button>
                     </a>
                 </div>

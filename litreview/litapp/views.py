@@ -160,7 +160,7 @@ def review_create(request):
             body = review_form.cleaned_data['body']
 
             review.save()
-            return HttpResponseRedirect('posts.html')
+            return HttpResponseRedirect('posts')
     else:
         ticket_form = TicketForm()
         review_form = ReviewForm()
@@ -189,7 +189,7 @@ def review_response(request, ticket_id):
             headline = review_form.cleaned_data['headline']
             body = review_form.cleaned_data['body']
             review.save()
-            return HttpResponseRedirect('/litapp/posts.html')
+            return HttpResponseRedirect('/litapp/posts/')
     else:
         review_form = ReviewForm()
 
@@ -200,6 +200,47 @@ def review_response(request, ticket_id):
     }
 
     return render(request, 'litapp/review_response.html', context)
+
+
+@login_required(login_url='login')
+def review_change(request, review_id):
+    review = get_object_or_404(Review, pk=review_id)
+
+    title_page = f"Vous modifiez la critique {review.id}"
+    review_data = {
+        'ticket': review.ticket,
+        'rating': review.rating,
+        'headline': review.headline,
+        'body': review.body,
+        'user': review.user,
+        'time_created': review.time_created,
+    }
+    if request.method == 'POST':
+        # On traite la critique que si le ticket a été enregistré précédemment
+        review_form = ReviewForm(request.POST, request.FILES)
+        if review_form.is_valid():
+            review.rating = review_form.cleaned_data['rating']
+            review.headline = review_form.cleaned_data['headline']
+            review.body = review_form.cleaned_data['body']
+            review.save()
+            return HttpResponseRedirect('/litapp/posts/')
+    else:
+        review_form = ReviewForm(review_data)
+
+    context = {
+        'message': title_page,
+        'review_form': review_form,
+        'ticket': review.ticket,
+    }
+
+    return render(request, 'litapp/review_response.html', context)
+
+
+@login_required(login_url='login')
+def review_delete(request, review_id):
+    review = get_object_or_404(Review, pk=review_id)
+    review.delete()
+    return redirect('posts')
 
 
 @login_required(login_url='login')
@@ -269,7 +310,6 @@ def ticket_change(request, ticket_id):
 def ticket_delete(request, ticket_id):
     ticket = get_object_or_404(Ticket, pk=ticket_id)
     ticket.delete()
-
     return redirect('posts')
 
 
