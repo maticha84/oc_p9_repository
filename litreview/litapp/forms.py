@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Ticket, Review
+from .models import Ticket, Review, UserFollows
 
 
 class TicketForm(forms.ModelForm):
@@ -29,4 +29,13 @@ class ReviewForm(forms.ModelForm):
             'headline': forms.TextInput(attrs={'class': 'form-control'}),
             'body': forms.Textarea(attrs={'class': 'form-control'}),
             'rating': forms.RadioSelect(choices=CHOICES),
+        }
+
+
+class FollowForm(forms.ModelForm):
+    class Meta:
+        model = UserFollows
+        fields = ['followed_user']
+        widgets = {
+            'followed_user': forms.TextInput(attrs={'class': 'form-control'}),
         }

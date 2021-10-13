@@ -12,7 +12,27 @@
     <body>
         <div class="main">
             <header class="page_title">
-                {% block title %}{% endblock %}
+
+                {% if user.is_active == True %}
+                <div class="container">
+                    <div class="row">
+                        <div class="col-6 right">
+                            <h3>{{ message }}</h3>
+                            <p class="fst-italic small">Vous êtes connecté en temps que {{ user.get_username }}</p>
+                        </div>
+                        <div class="col-6 left navbar">
+                            <a href="{% url 'home' %}">Flux</a>
+                            <a href="{% url 'posts' %}">Posts</a>
+                            <a href="{% url 'follow' %}">Abonnements</a>
+                            <a href="{% url 'logout' %}" type="submit">Se déconnecter</a>
+                        </div>
+
+                    </div>
+                </div>
+                {% else %}
+                <h3>{{ message }}</h3>
+                {% endif %}
+
             </header>
 
                 {% block content %}{% endblock %}

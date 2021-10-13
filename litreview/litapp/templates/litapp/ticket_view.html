@@ -1,7 +1,7 @@
 {% if post.ticket %}
     <div class="row m-5 p-5 justify-content-around border border-dark bg-secondary text-light">
         <div class="col-6">
-            <p class="border-bottom border-light"> {{ post.ticket.user }} a demandé une critique </p>
+            <p class="border-bottom border-light fst-italic"> {{ post.ticket.user }} a demandé une critique </p>
             <p class="border-bottom border-light"> {{ post.ticket.title }}  </p>
             <p> {{ post.ticket.description }} </p>
             {% if post.ticket.image %}

@@ -1,9 +1,60 @@
 
     <div class="row m-5 p-5 justify-content-around border border-dark bg-secondary text-light">
         <div class="col-6">
-            <p class="border-bottom border-light"> {{ post.user }} a publié une critique </p>
-            <p class="border-bottom border-light"> {{ post.headline }} {{post.rating}}</p>
-            <p class="border-bottom border-light"> {{ post.body }} </p>
+            <p class="border-bottom border-light fst-italic"> {{ post.user }} a publié une critique </p>
+            <p class="h3"> {{ post.headline }} </p>
+            {% load static %}
+            {% if post.rating == 0 %}
+            <p>
+                <span>
+                    <img src="{% static '/litapp/img/etoile_blanche.png' %}" width='30px'>
+                    <img src="{% static '/litapp/img/etoile_blanche.png' %}" width='30px'>
+                    <img src="{% static '/litapp/img/etoile_blanche.png' %}" width='30px'>
+                    <img src="{% static '/litapp/img/etoile_blanche.png' %}" width='30px'>
+                    <img src="{% static '/litapp/img/etoile_blanche.png' %}" width='30px'>
+                </span>
+            {% elif post.rating == 1 %}
+                <span>
+                    <img src="{% static '/litapp/img/etoile_noire.png' %}" width='30px'>
+                    <img src="{% static '/litapp/img/etoile_blanche.png' %}" width='30px'>
+                    <img src="{% static '/litapp/img/etoile_blanche.png' %}" width='30px'>
+                    <img src="{% static '/litapp/img/etoile_blanche.png' %}" width='30px'>
+                    <img src="{% static '/litapp/img/etoile_blanche.png' %}" width='30px'>
+                </span>
+            {% elif post.rating == 2 %}
+                <span>
+                    <img src="{% static '/litapp/img/etoile_noire.png' %}" width='30px'>
+                    <img src="{% static '/litapp/img/etoile_noire.png' %}" width='30px'>
+                    <img src="{% static '/litapp/img/etoile_blanche.png' %}" width='30px'>
+                    <img src="{% static '/litapp/img/etoile_blanche.png' %}" width='30px'>
+                    <img src="{% static '/litapp/img/etoile_blanche.png' %}" width='30px'>
+                </span>
+            {% elif post.rating == 3 %}
+                <span>
+                    <img src="{% static '/litapp/img/etoile_noire.png' %}" width='30px'>
+                    <img src="{% static '/litapp/img/etoile_noire.png' %}" width='30px'>
+                    <img src="{% static '/litapp/img/etoile_noire.png' %}" width='30px'>
+                    <img src="{% static '/litapp/img/etoile_blanche.png' %}" width='30px'>
+                    <img src="{% static '/litapp/img/etoile_blanche.png' %}" width='30px'>
+                </span>
+            {% elif post.rating == 4 %}
+                <span>
+                    <img src="{% static '/litapp/img/etoile_noire.png' %}" width='30px'>
+                    <img src="{% static '/litapp/img/etoile_noire.png' %}" width='30px'>
+                    <img src="{% static '/litapp/img/etoile_noire.png' %}" width='30px'>
+                    <img src="{% static '/litapp/img/etoile_noire.png' %}" width='30px'>
+                    <img src="{% static '/litapp/img/etoile_blanche.png' %}" width='30px'>
+                </span>
+            {% elif post.rating == 5 %}
+                <span>
+                    <img src="{% static '/litapp/img/etoile_noire.png' %}" width='30px'>
+                    <img src="{% static '/litapp/img/etoile_noire.png' %}" width='30px'>
+                    <img src="{% static '/litapp/img/etoile_noire.png' %}" width='30px'>
+                    <img src="{% static '/litapp/img/etoile_noire.png' %}" width='30px'>
+                    <img src="{% static '/litapp/img/etoile_noire.png' %}" width='30px'>
+                </span>
+            {% endif %}</p>
+            <p class="border-top border-light"> {{ post.body }} </p>
         </div>
         <div class="col-3 col-center">
             <p class="small border rounded-pill border-light">{{ post.time_created|date:"H:i, d F Y" }}</p>

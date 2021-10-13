@@ -1,0 +1,28 @@
+{% extends 'litapp/base.html' %}
+
+{% block content %}
+<form method="post" class="form container">
+    {% csrf_token %}
+    <div class="container">
+        <div class="row">
+            <div class="col-8 col-center" >
+                <p class="h4">Suivre d'autres utilisateurs</p>
+                <input type="text" class="form-control" name="follow_user" placeholder="Nom d'utilisateur"/>
+                <button class="btn btn-secondary" value="Submit" type="submit" >Envoyer</button>
+                <h5 class="text-light bg-danger small fw-bold fst-italic">{{ echec }}</h5>
+                <h5 class="text-dark small fw-bold fst-italic">{{ success }}</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-8 col-center" >
+                <p class="h4">Abonnements</p>
+            </div>
+            </div>
+        <div class="row">
+            <div class="col-8 col-center" >
+                <p class="h4">Abonnés</p>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}

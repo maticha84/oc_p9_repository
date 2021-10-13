@@ -9,7 +9,7 @@ from django.db.models.fields import CharField
 from django.db.models import Value
 
 from .models import User, Ticket, Review, UserFollows
-from .forms import TicketForm, ReviewForm
+from .forms import TicketForm, ReviewForm, FollowForm
 
 
 def index(request):
@@ -95,7 +95,7 @@ def new_account(request):
 
 @login_required(login_url='login')
 def home_view(request):
-    title_page = "Bienvenue à la maison"
+    title_page = "Flux"
     tickets = Ticket.objects.order_by('-time_created')
     reviews = Review.objects.order_by('-time_created')
 
@@ -256,10 +256,6 @@ def ticket_create(request):
             title = ticket_form.cleaned_data['title']
             description = ticket_form.cleaned_data['description']
             image = ticket_form.cleaned_data['image']
-            context = {
-                'message': title_page,
-                'ticket_form': ticket_form,
-            }
 
             ticket.save()
             return HttpResponseRedirect('/litapp/posts/')
@@ -342,3 +338,39 @@ def posts_view(request):
     }
 
     return render(request, 'litapp/posts.html', context)
+
+
+@login_required(login_url='login')
+def follow_view(request):
+    page_title = 'Abonnements'
+    success = ''
+
+    if request.method == 'POST':
+        follow_user = request.POST.get('follow_user')
+        existing_user = User.objects.filter(username=follow_user)
+
+        if existing_user:
+            existing_user = User.objects.get(username=follow_user)
+            try:
+                user_follows = UserFollows(user=request.user, followed_user=existing_user)
+                user_follows.save()
+                success = f"Vous êtes abonnés à {existing_user.username}"
+            except:
+                echec = "Vous êtes déjà abonnés à cet utilisateur"
+                context = {
+                    'message': page_title,
+                    'echec': echec,
+                }
+                return render(request, 'litapp/follow.html', context)
+        else:
+            echec = "Le nom de l'utilisateur demandé n'existe pas"
+            context = {
+                'message': page_title,
+                'echec': echec,
+            }
+            return render(request, 'litapp/follow.html', context)
+    context = {
+        'message': page_title,
+        'success': success,
+    }
+    return render(request, 'litapp/follow.html', context)
