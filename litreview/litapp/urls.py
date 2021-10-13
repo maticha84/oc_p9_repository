@@ -16,4 +16,5 @@ urlpatterns = [
     path('<int:ticket_id>/ticket_change/', views.ticket_change, name='ticket_change'),
     path('<int:review_id>/review_delete/', views.review_delete, name='review_delete'),
     path('<int:ticket_id>/ticket_delete/', views.ticket_delete, name='ticket_delete'),
+    path('<int:followed_by_id><int:following_id>/follow_delete/', views.follow_delete, name='follow_delete'),
 ]

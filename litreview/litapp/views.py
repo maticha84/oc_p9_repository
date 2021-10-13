@@ -9,7 +9,7 @@ from django.db.models.fields import CharField
 from django.db.models import Value
 
 from .models import User, Ticket, Review, UserFollows
-from .forms import TicketForm, ReviewForm, FollowForm
+from .forms import TicketForm, ReviewForm
 
 
 def index(request):
@@ -344,7 +344,8 @@ def posts_view(request):
 def follow_view(request):
     page_title = 'Abonnements'
     success = ''
-
+    list_followed = []
+    list_following = []
     if request.method == 'POST':
         follow_user = request.POST.get('follow_user')
         existing_user = User.objects.filter(username=follow_user)
@@ -369,8 +370,29 @@ def follow_view(request):
                 'echec': echec,
             }
             return render(request, 'litapp/follow.html', context)
+
+    followed_by = UserFollows.objects.filter(user=request.user)
+
+    for u in followed_by:
+        list_followed.append(u)
+
+    following = UserFollows.objects.filter(followed_user=request.user)
+    for u in following:
+        list_following.append(u)
     context = {
         'message': page_title,
         'success': success,
+        'followed_by': list_followed,
+        'following': list_following,
+
     }
     return render(request, 'litapp/follow.html', context)
+
+
+@login_required(login_url='login')
+def follow_delete(request, followed_by_id, following_id):
+    followed_by = UserFollows.objects.filter(user_id=following_id, followed_user_id=followed_by_id)
+    if followed_by:
+        followed_by = UserFollows.objects.get(user_id=following_id, followed_user_id=followed_by_id)
+        followed_by.delete()
+    return redirect('follow')

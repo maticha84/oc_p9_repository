@@ -31,11 +31,3 @@ class ReviewForm(forms.ModelForm):
             'rating': forms.RadioSelect(choices=CHOICES),
         }
 
-
-class FollowForm(forms.ModelForm):
-    class Meta:
-        model = UserFollows
-        fields = ['followed_user']
-        widgets = {
-            'followed_user': forms.TextInput(attrs={'class': 'form-control'}),
-        }

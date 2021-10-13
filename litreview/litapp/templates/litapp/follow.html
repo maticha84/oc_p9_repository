@@ -5,23 +5,42 @@
     {% csrf_token %}
     <div class="container">
         <div class="row">
-            <div class="col-8 col-center" >
-                <p class="h4">Suivre d'autres utilisateurs</p>
-                <input type="text" class="form-control" name="follow_user" placeholder="Nom d'utilisateur"/>
-                <button class="btn btn-secondary" value="Submit" type="submit" >Envoyer</button>
-                <h5 class="text-light bg-danger small fw-bold fst-italic">{{ echec }}</h5>
-                <h5 class="text-dark small fw-bold fst-italic">{{ success }}</h5>
+            <p></p>
+            <p class="h4 col-center border border-dark bg-secondary text-light">Suivre d'autres utilisateurs</p>
+            <div class="col-10 text-right" ><br>
+                <input type="text" class="form-control border border-secondary" name="follow_user" placeholder="Nom d'utilisateur"/>
             </div>
+            <div class="col-2 text-left" ><br>
+                <button class="btn btn-secondary" value="Submit" type="submit" >Envoyer</button>
+            </div>
+            <h5 class="text-light bg-danger small fw-bold fst-italic">{{ echec }}</h5>
+            <h5 class="text-dark small fw-bold fst-italic">{{ success }}</h5>
+        </div>
+        <p></p>
+        <div class="row">
+            <p class="h4 col-center border border-dark bg-secondary text-light">Abonnements</p>
+            <p></p>
+            {% for user_followed in followed_by %}
+                <div class="col-10 border border-secondary bg-light" >
+                    <p>{{ user_followed.followed_user }}</p>
+                </div>
+                <div class="col-2 text-left" >
+                    <a href="{% url 'follow_delete' followed_by_id=user_followed.followed_user_id following_id=user_followed.user_id  %}" onclick="return confirm(
+                    'Etes-vous sûr de supprimer cet abonnement ?');">
+                    <button class="btn btn-secondary" value="delete" type="button" >Supprimer</button>
+                    </a>
+                </div>
+            {% endfor %}
         </div>
         <div class="row">
-            <div class="col-8 col-center" >
-                <p class="h4">Abonnements</p>
+            <p></p>
+            <p class="h4 h4 col-center border border-dark bg-secondary text-light">Abonnés</p>
+            <p></p>
+            {% for user_following in following %}
+            <div class="col-12 border border-secondary bg-light" >
+                <p>{{ user_following.user }}</p>
             </div>
-            </div>
-        <div class="row">
-            <div class="col-8 col-center" >
-                <p class="h4">Abonnés</p>
-            </div>
+            {% endfor %}
         </div>
     </div>
 </form>

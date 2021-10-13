@@ -1,21 +1,4 @@
 {% extends 'litapp/base.html' %}
-{% block title %}
-<div class="container">
-    <div class="row">
-
-        <div class="col-6 right">
-            <h3 >{{ message }}</h3>
-        </div>
-        <div class="col-6 left navbar">
-            <a href="{% url 'home' %}">Flux</a>
-            <a href="{% url 'posts' %}">Posts</a>
-            <a href="#">Abonnements</a>
-            <a href="{% url 'logout' %}" type="submit">Se déconnecter</a>
-        </div>
-    </div>
-</div>
-
-{% endblock %}
 
 {% block content %}
 <div class="container card-body border border-dark bg-light">
