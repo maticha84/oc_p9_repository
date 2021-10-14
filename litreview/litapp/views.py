@@ -96,14 +96,14 @@ def new_account(request):
 @login_required(login_url='login')
 def home_view(request):
     title_page = "Flux"
-    tickets = Ticket.objects.order_by('-time_created')
-    reviews = Review.objects.order_by('-time_created')
+    #tickets = Ticket.objects.order_by('-time_created')
+    #reviews = Review.objects.order_by('-time_created')
 
-    #reviews = get_users_viewable_reviews(request.user)
+    reviews = get_users_viewable_reviews(request.user)
     # returns queryset of reviews
     reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
 
-    #tickets = get_users_viewable_tickets(request.user)
+    tickets = get_users_viewable_tickets(request.user)
     # returns queryset of tickets
     tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
 
@@ -122,6 +122,31 @@ def home_view(request):
     }
 
     return render(request, 'litapp/home.html', context)
+
+
+def get_users_viewable_tickets(user):
+    list_user = [user]
+
+    users_followed = UserFollows.objects.filter(user=user)
+    for u in users_followed:
+        user_follow = User.objects.filter(followed_by=u)
+        for us in user_follow:
+            list_user.append(us)
+
+    tickets = Ticket.objects.filter(user__in=list_user)
+    return tickets
+
+
+def get_users_viewable_reviews(user):
+    list_user = [user]
+
+    users_followed = UserFollows.objects.filter(user=user)
+    for u in users_followed:
+        user_follow = User.objects.filter(followed_by=u)
+        for us in user_follow:
+            list_user.append(us)
+    reviews = Review.objects.filter(user__in=list_user)
+    return reviews
 
 
 @login_required(login_url='login')
@@ -312,15 +337,10 @@ def ticket_delete(request, ticket_id):
 @login_required(login_url='login')
 def posts_view(request):
     title_page = "Vos posts"
-    tickets = Ticket.objects.order_by('-time_created')
     reviews = Review.objects.order_by('-time_created')
-
-    # reviews = get_users_viewable_reviews(request.user)
-    # returns queryset of reviews
     reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
 
-    # tickets = get_users_viewable_tickets(request.user)
-    # returns queryset of tickets
+    tickets = Ticket.objects.order_by('-time_created')
     tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
 
     # combine and sort the two types of posts
@@ -346,8 +366,24 @@ def follow_view(request):
     success = ''
     list_followed = []
     list_following = []
+
+    followed_by = UserFollows.objects.filter(user=request.user)
+    for u in followed_by:
+        list_followed.append(u)
+    following = UserFollows.objects.filter(followed_user=request.user)
+    for u in following:
+        list_following.append(u)
     if request.method == 'POST':
         follow_user = request.POST.get('follow_user')
+        if follow_user == request.user.username:
+            echec = "Vous ne pouvez pas vous abonner à vous-même"
+            context = {
+                'message': page_title,
+                'echec': echec,
+                'followed_by': list_followed,
+                'following': list_following,
+            }
+            return render(request, 'litapp/follow.html', context)
         existing_user = User.objects.filter(username=follow_user)
 
         if existing_user:
@@ -355,12 +391,15 @@ def follow_view(request):
             try:
                 user_follows = UserFollows(user=request.user, followed_user=existing_user)
                 user_follows.save()
+                list_followed.append(user_follows)
                 success = f"Vous êtes abonnés à {existing_user.username}"
             except:
                 echec = "Vous êtes déjà abonnés à cet utilisateur"
                 context = {
                     'message': page_title,
                     'echec': echec,
+                    'followed_by': list_followed,
+                    'following': list_following,
                 }
                 return render(request, 'litapp/follow.html', context)
         else:
@@ -368,17 +407,11 @@ def follow_view(request):
             context = {
                 'message': page_title,
                 'echec': echec,
+                'followed_by': list_followed,
+                'following': list_following,
             }
             return render(request, 'litapp/follow.html', context)
 
-    followed_by = UserFollows.objects.filter(user=request.user)
-
-    for u in followed_by:
-        list_followed.append(u)
-
-    following = UserFollows.objects.filter(followed_user=request.user)
-    for u in following:
-        list_following.append(u)
     context = {
         'message': page_title,
         'success': success,
