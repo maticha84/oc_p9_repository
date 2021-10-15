@@ -1,9 +1,12 @@
 from django import forms
 
-from .models import Ticket, Review, UserFollows
+from .models import Ticket, Review, User
 
 
 class TicketForm(forms.ModelForm):
+    """
+    Template for the ticket creation/change form
+    """
     class Meta:
         model = Ticket
         fields = ['title', 'description', 'image', ]
@@ -14,6 +17,9 @@ class TicketForm(forms.ModelForm):
 
 
 class ReviewForm(forms.ModelForm):
+    """
+    Template for the review creation / change form
+    """
     class Meta:
         model = Review
         fields = ['rating', 'headline', 'body', ]
@@ -30,4 +36,3 @@ class ReviewForm(forms.ModelForm):
             'body': forms.Textarea(attrs={'class': 'form-control'}),
             'rating': forms.RadioSelect(choices=CHOICES),
         }
-

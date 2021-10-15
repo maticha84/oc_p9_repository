@@ -21,16 +21,11 @@ from django.conf.urls.static import static
 
 from litapp.views import index
 
-
-
 favicon_view = RedirectView.as_view(url='static/litapp/img/favicon.ico')
-
-
-
 
 urlpatterns = [
     path('', index, name='index'),
-    path('admin/', admin.site.urls),
+    path('content/', admin.site.urls),
     path('litapp/', include('litapp.urls')),
     path('favicon.ico', favicon_view),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

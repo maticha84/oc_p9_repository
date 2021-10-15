@@ -134,8 +134,6 @@ def home_view(request):
         'tickets': tickets,
         'reviews': reviews,
         'posts': posts,
-        'list_id': list_id,
-        'list_all': list_all,
     }
 
     return render(request, 'litapp/home.html', context)
