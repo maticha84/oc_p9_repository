@@ -5,7 +5,7 @@
 <br>{% if message_delete %}{{ message_delete }}{% endif %}<br>
 
 {% for post in posts %}
-    {% if post.content_type == 'REVIEW' and post.user == user %}
+    {% if post.content_type == 'REVIEW' %}
         <div class="container card-body border border-dark bg-light">
         {% include 'litapp/review_view.html' %}
             <div class="row ">
@@ -24,7 +24,7 @@
         </div>
 
         <br>
-    {% elif post.content_type == 'TICKET' and post.user == user %}
+    {% elif post.content_type == 'TICKET' %}
         <div class="container card-body border border-dark bg-light">
         {% include 'litapp/ticket_view.html' %}
             <div class="row ">

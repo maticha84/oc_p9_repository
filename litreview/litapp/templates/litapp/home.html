@@ -17,7 +17,6 @@
     </div>
 </div>
 <div class="container">
-
     <br><br>
     {% for post in posts %}
         {% if post.content_type == 'REVIEW' %}
@@ -29,7 +28,6 @@
             <div class="container card-body border border-dark bg-light">
 
                 {% include 'litapp/ticket_view.html' %}
-                {% if post.review_of.all.count == 0 %}
                 <div class="row justify-content-end bg-light">
                     <div class="col-3">
                     <a href="{% url 'review_response' ticket_id=post.id %}">
@@ -37,11 +35,10 @@
                     </a>
                     </div>
                 </div>
-                {% endif %}
             </div>
             <br>
 
         {% endif %}
     {% endfor %}
 </div>
-{%endblock %}
+{% endblock %}
