@@ -1,4 +1,5 @@
-#![Logo](https://github.com/maticha84/oc_p9_repository/blob/master/litreview/litapp/static/litapp/img/logo_small.png) LitReview project
+![Logo](https://github.com/maticha84/oc_p9_repository/blob/master/litreview/litapp/static/litapp/img/logo_small.png) 
+#LitReview project
 ## __*book reviews*__
 ___
 ___
@@ -57,5 +58,5 @@ From this page you can :
 
 _*In this project, no request was made to handle password reset or change. This feature is not implemented at this time.*_
 ___
-#### _* Home view - Flox_*
+#### _* Home view - Flow_*
 ___
