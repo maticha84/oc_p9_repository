@@ -222,7 +222,7 @@ def review_create(request):
             body = review_form.cleaned_data['body']
 
             review.save()
-            return HttpResponseRedirect('posts')
+            return HttpResponseRedirect('/litapp/posts/')
     else:
         ticket_form = TicketForm()
         review_form = ReviewForm()
