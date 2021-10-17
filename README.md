@@ -41,11 +41,11 @@ Superuser for administration by default:
 
 `login = adminuser - mdp = Mdp@dminUs3r!`. 
 
-This password must be changed the first time you log in.
+_*For security reasons, it is strongly recommended changing the password at the first connection.*_
 ___
 ### Instructions for use
 ***
-On the start page, you can choose the appilcation you want to use.  For this project, only one application exists. 
+On the start page, you can choose the application you want to use.  For this project, only one application exists. 
 Click on the `litapp` button to enter the user interface of the application.
 ___
 #### _* Login view *_
@@ -112,4 +112,52 @@ You have to give a rate, with a Headline and a comment for publish your review.
 Once you have completed the form, click on the `Envoyer` button to post your request.
 
 You will then be directly redirected to the `Posts` page, which allows you to manage your publications 
+
+___
+#### _* Posts view_*
+___
+This page allows you to see the publications you have made. 
+
+All the reviews and tickets you have written. 
+You can edit or delete any post you have made. 
+
+_*Please note that if you delete a ticket, the related review will automatically be deleted with it.*_
+
+1. Change Ticket
+
+When you click on the button `Modifier Ticket`, a page with a ticket form opens, the form is pre-filled.  
+Once you have made your changes, click on the `Envoyer` 
+button to save your changes. You will be redirected to your posts page.
+
+2. Change Review
+
+When you click on the button `Modifier Critique`, a page with a review form opens, the form is pre-filled.  
+Once you have made your changes, click on the `Envoyer` 
+button to save your changes. You will be redirected to your posts page.
+
+3. Delete Ticket / review
+
+When you click on the `Supprimer Critique / Supprimer Ticket` button, a popup asks for confirmation of deletion. 
+If you accept, the ticket/critique will be deleted from the database.
+
+___
+#### _* Subscription view_*
+___
+The page `Abonnements`allows you to manage your subscriptions. You can see which users are subscribed to you, 
+see which users you follow, and add new user following.
+
+1. New user follow
+
+You can subscribe to a new user by entering their username. Please note that this is case sensitive. 
+Once you have entered the username, click on the `Envoyer` button to subscribe. If the username does not exist, or if you
+have already subscribed to that user, a message will inform you.
+
+2. User followed by you
+
+All users to whom you are subscribed appear here. You can unsubscribe by clicking on the `Supprimer` button.  
+A confirmation popup will appear to prevent accidental deletion.
+
+3. User following you
+
+All users who follow you appear here. 
 
