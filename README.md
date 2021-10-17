@@ -1,6 +1,6 @@
 ![Logo](https://github.com/maticha84/oc_p9_repository/blob/master/litreview/litapp/static/litapp/img/logo_small.png) 
 
-#LitReview project
+# LitReview project
 ## __*book reviews*__
 ___
 ___
