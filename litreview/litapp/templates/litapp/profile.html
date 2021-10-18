@@ -1,0 +1,28 @@
+{% extends 'litapp/base.html' %}
+
+
+{% block content %}
+<div class="container">
+    <div class="row ">
+        <br>
+        <div class="col-4 border border-dark bg-light bg-opacity-light">
+
+            <h2 class="col-center"> Bienvenue {{user.get_username}}</h2>
+            <p> Ici la page de profil. Pour le moment, ne permet que de changer le mot de passe.</p>
+        </div>
+        <div class="col-4 col-center">
+            <br>
+            <form method= "post" class="form container border border-dark">
+                {% csrf_token %}
+                <br>
+                <p class="h5 bg-secondary text-light"> Changer votre mot de passe </p>
+                <input type="password" class="form-control" name="password1" placeholder="Nouveau Mot de passe"/>
+                <input type="password" class="form-control"  name="password2" placeholder="Confirmation mot de passe"/>
+                <button class="btn btn-secondary" value="create" type="submit" >Valider</button>
+                <h5 class="text-light bg-danger small fw-bold fst-italic">{{ echec }}</h5>
+                <h5 class="text-dark small fw-bold fst-italic">{{ success }}</h5>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
