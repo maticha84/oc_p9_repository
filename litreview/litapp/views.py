@@ -7,6 +7,7 @@ from django.contrib.auth.password_validation import validate_password
 from itertools import chain
 from django.db.models.fields import CharField
 from django.db.models import Value, Q
+from django.contrib import messages
 
 from .models import User, Ticket, Review, UserFollows
 from .forms import TicketForm, ReviewForm
@@ -29,7 +30,6 @@ def login_view(request):
     if request method is POST, connexion test
     """
     title = "Page de login"
-    login_echec = ""
 
     if request.POST:
         username = request.POST.get('username')
@@ -40,11 +40,10 @@ def login_view(request):
             login(request, user)
             return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
         else:
-            login_echec = "Nom d'utilisateur et/ou Mdp incorrect."
+            messages.error(request, "Nom d'utilisateur et/ou Mdp incorrect.")
 
     context = {
         'message': title,
-        'login_echec': login_echec,
     }
     return render(request, 'litapp/login.html', context)
 
@@ -53,6 +52,7 @@ def logout_view(request):
     """
     logout view
     """
+    messages.info(request, "Déconnexion effectuée. Veuillez vous reconnecter pour accéder au site.")
     logout(request)
     return redirect('login')
 
@@ -63,48 +63,70 @@ def new_account(request):
     if request method is POST, testing creation new user
     """
     title = "Création d'un compte"
-    success = ""
 
     if request.POST:
         username = request.POST.get('new_username')
         user_test = User.objects.filter(username=username)
         if user_test:
-            echec = "Le nom de l'utilisateur existe déjà. Veuillez réessayer"
-            context = {
-                'message': title,
-                'echec': echec,
-            }
+            messages.error(request, "Le nom de l'utilisateur existe déjà. Veuillez réessayer")
+            return redirect('new_account')
 
-            return render(request, 'litapp/new_account.html', context)
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+
+        try:
+            validate_password(password1)
+        except:
+            messages.error(request, "Le mot de passe doit être complexe et contenir au moins 9 caractères")
+            return redirect('new_account')
+
+        if password1 != password2:
+            messages.error(request, "Les mots de passe fournit ne correspondent pas")
+            return redirect('new_account')
+
+        user = User.objects.create_user(username=username, password=password1)
+
+        messages.info(request, f"Création du compte {user.username} effectuée. Vous pouvez à présent vous connecter.")
+
+    context = {
+        'message': title,
+    }
+    return render(request, 'litapp/new_account.html', context)
+
+
+@login_required(login_url='login')
+def profile_view(request):
+    title_page = "Profile"
+    success = ''
+    echec = ''
+    context = {
+        'message': title_page,
+        'success': success,
+        'echec': echec,
+    }
+    if request.POST:
+        username = request.user.username
+        user_modify = User.objects.get(username=username)
 
         password1 = request.POST.get('password1')
         password2 = request.POST.get('password2')
         try:
             validate_password(password1)
         except:
-            echec = "Le mot de passe doit être complexe et contenir au moins 9 caractères"
-            context = {
-                'message': title,
-                'echec': echec,
-            }
-            return render(request, 'litapp/new_account.html', context)
+            context['echec'] = "Le mot de passe doit être complexe et contenir au moins 9 caractères"
+
+            return render(request, 'litapp/profile.html', context)
+
         if password1 != password2:
-            echec = "Les mots de passe fournit ne correspondent pas"
-            context = {
-                'message': title,
-                'echec': echec,
-            }
-            return render(request, 'litapp/new_account.html', context)
+            context['echec'] = "Les mots de passe fournit ne correspondent pas"
 
-        user = User.objects.create_user(username=username, password=password1)
+            return render(request, 'litapp/profile.html', context)
+        else:
+            user_modify.set_password(password1)
+            user_modify.save()
+            context['success'] = "Mot de passe modifié avec succès"
 
-        success = f"Création du compte {user.username} effectuée. Vous pouvez à présent vous connecter."
-    context = {
-        'message': title,
-        'success': success,
-    }
-
-    return render(request, 'litapp/new_account.html', context)
+    return render(request, 'litapp/profile.html', context)
 
 
 @login_required(login_url='login')
@@ -247,10 +269,11 @@ def review_response(request, ticket_id):
     if request.method == 'POST':
         # On traite la critique que si le ticket a été enregistré précédemment
         review_form = ReviewForm(request.POST, request.FILES)
-        review = review_form.save(commit=False)
-        review.user = request.user
-        review.ticket = ticket
+
         if review_form.is_valid():
+            review = review_form.save(commit=False)
+            review.user = request.user
+            review.ticket = ticket
             rating = review_form.cleaned_data['rating']
             headline = review_form.cleaned_data['headline']
             body = review_form.cleaned_data['body']
@@ -325,9 +348,10 @@ def ticket_create(request):
     if request.method == 'POST':
 
         ticket_form = TicketForm(request.POST, request.FILES)
-        ticket = ticket_form.save(commit=False)
-        ticket.user = request.user
+
         if ticket_form.is_valid():
+            ticket = ticket_form.save(commit=False)
+            ticket.user = request.user
             title = ticket_form.cleaned_data['title']
             description = ticket_form.cleaned_data['description']
             image = ticket_form.cleaned_data['image']
