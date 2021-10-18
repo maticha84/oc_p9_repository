@@ -64,17 +64,18 @@ def new_account(request):
     """
     title = "Création d'un compte"
     success = ""
+    echec=""
+    context = {
+        'message': title,
+        'success': success,
+        'echec': echec,
+    }
 
     if request.POST:
         username = request.POST.get('new_username')
         user_test = User.objects.filter(username=username)
         if user_test:
-            echec = "Le nom de l'utilisateur existe déjà. Veuillez réessayer"
-            context = {
-                'message': title,
-                'echec': echec,
-            }
-
+            context['echec'] = "Le nom de l'utilisateur existe déjà. Veuillez réessayer"
             return render(request, 'litapp/new_account.html', context)
 
         password1 = request.POST.get('password1')
@@ -82,29 +83,52 @@ def new_account(request):
         try:
             validate_password(password1)
         except:
-            echec = "Le mot de passe doit être complexe et contenir au moins 9 caractères"
-            context = {
-                'message': title,
-                'echec': echec,
-            }
+            context['echec'] = "Le mot de passe doit être complexe et contenir au moins 9 caractères"
             return render(request, 'litapp/new_account.html', context)
         if password1 != password2:
-            echec = "Les mots de passe fournit ne correspondent pas"
-            context = {
-                'message': title,
-                'echec': echec,
-            }
+            context['echec'] = "Les mots de passe fournit ne correspondent pas"
             return render(request, 'litapp/new_account.html', context)
 
         user = User.objects.create_user(username=username, password=password1)
 
-        success = f"Création du compte {user.username} effectuée. Vous pouvez à présent vous connecter."
-    context = {
-        'message': title,
-        'success': success,
-    }
+        context['success'] = f"Création du compte {user.username} effectuée. Vous pouvez à présent vous connecter."
 
     return render(request, 'litapp/new_account.html', context)
+
+
+@login_required(login_url='login')
+def profile_view(request):
+    title_page = "Profile"
+    success = ''
+    echec = ''
+    context = {
+        'message': title_page,
+        'success': success,
+        'echec': echec,
+    }
+    if request.POST:
+        username = request.user.username
+        user_modify = User.objects.get(username=username)
+
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+        try:
+            validate_password(password1)
+        except:
+            context['echec'] = "Le mot de passe doit être complexe et contenir au moins 9 caractères"
+
+            return render(request, 'litapp/profile.html', context)
+
+        if password1 != password2:
+            context['echec'] = "Les mots de passe fournit ne correspondent pas"
+
+            return render(request, 'litapp/profile.html', context)
+        else:
+            user_modify.set_password(password1)
+            user_modify.save()
+            context['success'] = "Mot de passe modifié avec succès"
+
+    return render(request, 'litapp/profile.html', context)
 
 
 @login_required(login_url='login')

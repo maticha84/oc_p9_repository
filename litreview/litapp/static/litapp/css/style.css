@@ -65,3 +65,7 @@ body {
   position: absolute;
   font-size: 90px;
 }
+
+.bg-opacity-light{
+    opacity:50%;
+}
