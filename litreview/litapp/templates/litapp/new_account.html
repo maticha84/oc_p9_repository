@@ -31,14 +31,21 @@
             </div>
         </div>
     </div>
+    {% if messages %}
     <div class="container">
+        {% for message in messages %}
         <div class="row">
             <div class="col-8 col-center">
                 <br>
-                <h5 class="text-light bg-danger small fw-bold fst-italic">{{ echec }}</h5>
-                <h5 class="text-dark small fw-bold fst-italic">{{ success }}</h5>
+                {% if message.tags == 'error' %}
+                <h5 class="text-light bg-danger small fw-bold fst-italic">{{ message }}</h5>
+                {% elif message.tags == 'info' %}
+                <h5 class="text-light bg-secondary small fst-italic">{{ message }}</h5>
+                {% endif %}
             </div>
         </div>
+        {% endfor %}
     </div>
+    {% endif %}
 </form>
 {% endblock %}

@@ -19,8 +19,15 @@
                 <input type="password" class="form-control" name="password1" placeholder="Nouveau Mot de passe"/>
                 <input type="password" class="form-control"  name="password2" placeholder="Confirmation mot de passe"/>
                 <button class="btn btn-secondary" value="create" type="submit" >Valider</button>
-                <h5 class="text-light bg-danger small fw-bold fst-italic">{{ echec }}</h5>
-                <h5 class="text-dark small fw-bold fst-italic">{{ success }}</h5>
+                {% if messages %}
+                {% for message in messages %}
+                {% if message.tags == 'error' %}
+                    <h5 class="text-light bg-danger small fw-bold fst-italic">{{ message }}</h5>
+                {% elif message.tags == 'info' %}
+                    <h5 class="text-light bg-secondary small fst-italic">{{ message }}</h5>
+                {% endif %}
+                {% endfor %}
+                {% endif %}
             </form>
         </div>
     </div>

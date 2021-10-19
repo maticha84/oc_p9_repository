@@ -7,6 +7,7 @@ from django.contrib.auth.password_validation import validate_password
 from itertools import chain
 from django.db.models.fields import CharField
 from django.db.models import Value, Q
+from django.contrib import messages
 
 from .models import User, Ticket, Review, UserFollows
 from .forms import TicketForm, ReviewForm
@@ -18,7 +19,7 @@ def index(request):
     """
     title = "Bienvenue sur le serveur LitReview - cliquez sur l'application qui vous intéresse"
     context = {
-        'message': title
+        'title_page': title
     }
     return render(request, 'litapp/index.html', context)
 
@@ -29,7 +30,6 @@ def login_view(request):
     if request method is POST, connexion test
     """
     title = "Page de login"
-    login_echec = ""
 
     if request.POST:
         username = request.POST.get('username')
@@ -40,11 +40,10 @@ def login_view(request):
             login(request, user)
             return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
         else:
-            login_echec = "Nom d'utilisateur et/ou Mdp incorrect."
+            messages.error(request, "Nom d'utilisateur et/ou Mdp incorrect.")
 
     context = {
-        'message': title,
-        'login_echec': login_echec,
+        'title_page': title,
     }
     return render(request, 'litapp/login.html', context)
 
@@ -53,6 +52,7 @@ def logout_view(request):
     """
     logout view
     """
+    messages.info(request, "Déconnexion effectuée. Veuillez vous reconnecter pour accéder au site.")
     logout(request)
     return redirect('login')
 
@@ -63,49 +63,40 @@ def new_account(request):
     if request method is POST, testing creation new user
     """
     title = "Création d'un compte"
-    success = ""
-    echec=""
-    context = {
-        'message': title,
-        'success': success,
-        'echec': echec,
-    }
 
     if request.POST:
         username = request.POST.get('new_username')
         user_test = User.objects.filter(username=username)
         if user_test:
-            context['echec'] = "Le nom de l'utilisateur existe déjà. Veuillez réessayer"
-            return render(request, 'litapp/new_account.html', context)
+            messages.error(request, "Le nom de l'utilisateur existe déjà. Veuillez réessayer")
+            return redirect('new_account')
 
         password1 = request.POST.get('password1')
         password2 = request.POST.get('password2')
+
         try:
             validate_password(password1)
         except:
-            context['echec'] = "Le mot de passe doit être complexe et contenir au moins 9 caractères"
-            return render(request, 'litapp/new_account.html', context)
+            messages.error(request, "Le mot de passe doit être complexe et contenir au moins 9 caractères")
+            return redirect('new_account')
+
         if password1 != password2:
-            context['echec'] = "Les mots de passe fournit ne correspondent pas"
-            return render(request, 'litapp/new_account.html', context)
+            messages.error(request, "Les mots de passe fournit ne correspondent pas")
+            return redirect('new_account')
 
         user = User.objects.create_user(username=username, password=password1)
+        messages.info(request, f"Création du compte {user.username} effectuée. Vous pouvez à présent vous connecter.")
 
-        context['success'] = f"Création du compte {user.username} effectuée. Vous pouvez à présent vous connecter."
-
+    context = {
+        'title_page': title,
+    }
     return render(request, 'litapp/new_account.html', context)
 
 
 @login_required(login_url='login')
 def profile_view(request):
     title_page = "Profile"
-    success = ''
-    echec = ''
-    context = {
-        'message': title_page,
-        'success': success,
-        'echec': echec,
-    }
+
     if request.POST:
         username = request.user.username
         user_modify = User.objects.get(username=username)
@@ -115,19 +106,21 @@ def profile_view(request):
         try:
             validate_password(password1)
         except:
-            context['echec'] = "Le mot de passe doit être complexe et contenir au moins 9 caractères"
+            messages.error(request, "Le mot de passe doit être complexe et contenir au moins 9 caractères")
 
-            return render(request, 'litapp/profile.html', context)
+            return redirect('profile')
 
         if password1 != password2:
-            context['echec'] = "Les mots de passe fournit ne correspondent pas"
+            messages.error(request, "Les mots de passe fournit ne correspondent pas")
 
-            return render(request, 'litapp/profile.html', context)
+            return redirect('profile')
         else:
             user_modify.set_password(password1)
             user_modify.save()
-            context['success'] = "Mot de passe modifié avec succès"
-
+            messages.info(request, "Mot de passe modifié avec succès")
+    context = {
+        'title_page': title_page,
+    }
     return render(request, 'litapp/profile.html', context)
 
 
@@ -147,6 +140,7 @@ def home_view(request):
     tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
 
     # combine and sort the two types of posts
+
     posts = sorted(
         chain(reviews, tickets),
         key=lambda post: post.time_created,
@@ -154,9 +148,7 @@ def home_view(request):
     )
 
     context = {
-        'message': title_page,
-        'tickets': tickets,
-        'reviews': reviews,
+        'title_page': title_page,
         'posts': posts,
     }
 
@@ -168,15 +160,10 @@ def get_users_viewable_tickets(user):
     get tickets from user and the users whose followed by user
     return : QuerySet of Ticket
     """
-    list_user = [user]
+    users = UserFollows.objects.filter(user=user)
+    user_follow = User.objects.filter(followed_by__in=users)
 
-    users_followed = UserFollows.objects.filter(user=user)
-    for u in users_followed:
-        user_follow = User.objects.filter(followed_by=u)
-        for us in user_follow:
-            list_user.append(us)
-
-    tickets = Ticket.objects.filter(user__in=list_user)
+    tickets = Ticket.objects.filter(Q(user__in=user_follow) | Q(user=user))
     return tickets
 
 
@@ -187,20 +174,15 @@ def get_users_viewable_reviews(user):
     display to.
     return : QuerySet of Review
     """
-    list_user = [user]
-    list_id = []
-    users_followed = UserFollows.objects.filter(user=user)
-    for u in users_followed:
-        user_follow = User.objects.filter(followed_by=u)
-        for us in user_follow:
-            list_user.append(us)
+    users = UserFollows.objects.filter(user=user)
+    user_follow = User.objects.filter(followed_by__in=users)
 
-    reviews = Review.objects.all()
-    for review in reviews:
-        if review.ticket.user == user:
-            list_id.append(review.id)
-
-    reviews = Review.objects.filter(Q(user__in=list_user) | Q(id__in=list_id))
+    reviews = Review.objects.filter(
+        Q(user__in=user_follow) |
+        Q(ticket__user=user) |
+        Q(ticket__user__in=user_follow) |
+        Q(user=user)
+    )
     return reviews
 
 
@@ -213,46 +195,39 @@ def review_create(request):
     second : if Ticket is create, creation of Review
     """
     title_page = "Créer une critique"
+    ticket_form = TicketForm()
+    review_form = ReviewForm()
 
     if request.method == 'POST':
         ticket_form = TicketForm(request.POST, request.FILES)
-        ticket = ticket_form.save(commit=False)
-        ticket.user = request.user
+
         if ticket_form.is_valid():
-            title = ticket_form.cleaned_data['title']
-            description = ticket_form.cleaned_data['description']
-            image = ticket_form.cleaned_data['image']
+            ticket = ticket_form.save(commit=False)
+            ticket.user = request.user
+            ticket.title = ticket_form.cleaned_data['title']
+            ticket.description = ticket_form.cleaned_data['description']
+            ticket.image = ticket_form.cleaned_data['image']
 
             ticket.save()
         else:
-            ticket_form = TicketForm()
-            review_form = ReviewForm()
-
-            context = {
-                'message': title_page,
-                'review_form': review_form,
-                'ticket_form': ticket_form,
-            }
-            return render(request, 'litapp/review.html', context)
+            messages.error(request, "Le formulaire n'est pas valide.")
+            return redirect('review')
 
         # On traite la critique que si le ticket a été enregistré précédemment
         review_form = ReviewForm(request.POST, request.FILES)
-        review = review_form.save(commit=False)
-        review.user = request.user
-        review.ticket = ticket
         if review_form.is_valid():
-            rating = review_form.cleaned_data['rating']
-            headline = review_form.cleaned_data['headline']
-            body = review_form.cleaned_data['body']
+            review = review_form.save(commit=False)
+            review.user = request.user
+            review.ticket = ticket
+            review.rating = review_form.cleaned_data['rating']
+            review.headline = review_form.cleaned_data['headline']
+            review.body = review_form.cleaned_data['body']
 
             review.save()
-            return HttpResponseRedirect('/litapp/posts/')
-    else:
-        ticket_form = TicketForm()
-        review_form = ReviewForm()
+            return redirect('posts')
 
     context = {
-        'message': title_page,
+        'title_page': title_page,
         'review_form': review_form,
         'ticket_form': ticket_form,
     }
@@ -269,22 +244,22 @@ def review_response(request, ticket_id):
     title_page = f"Vous répondez au ticket {ticket.title}"
 
     if request.method == 'POST':
-        # On traite la critique que si le ticket a été enregistré précédemment
         review_form = ReviewForm(request.POST, request.FILES)
-        review = review_form.save(commit=False)
-        review.user = request.user
-        review.ticket = ticket
+
         if review_form.is_valid():
-            rating = review_form.cleaned_data['rating']
-            headline = review_form.cleaned_data['headline']
-            body = review_form.cleaned_data['body']
+            review = review_form.save(commit=False)
+            review.user = request.user
+            review.ticket = ticket
+            review.rating = review_form.cleaned_data['rating']
+            review.headline = review_form.cleaned_data['headline']
+            review.body = review_form.cleaned_data['body']
             review.save()
-            return HttpResponseRedirect('/litapp/posts/')
+            return redirect('posts')
     else:
         review_form = ReviewForm()
 
     context = {
-        'message': title_page,
+        'title_page': title_page,
         'review_form': review_form,
         'ticket': ticket,
     }
@@ -298,30 +273,20 @@ def review_change(request, review_id):
     Display modification review view
     """
     review = get_object_or_404(Review, pk=review_id)
-
+    review_form = ReviewForm(instance=review)
     title_page = f"Vous modifiez la critique {review.id}"
-    review_data = {
-        'ticket': review.ticket,
-        'rating': review.rating,
-        'headline': review.headline,
-        'body': review.body,
-        'user': review.user,
-        'time_created': review.time_created,
-    }
+
     if request.method == 'POST':
-        # On traite la critique que si le ticket a été enregistré précédemment
         review_form = ReviewForm(request.POST, request.FILES)
         if review_form.is_valid():
             review.rating = review_form.cleaned_data['rating']
             review.headline = review_form.cleaned_data['headline']
             review.body = review_form.cleaned_data['body']
             review.save()
-            return HttpResponseRedirect('/litapp/posts/')
-    else:
-        review_form = ReviewForm(review_data)
+            return redirect('posts')
 
     context = {
-        'message': title_page,
+        'title_page': title_page,
         'review_form': review_form,
         'ticket': review.ticket,
     }
@@ -345,23 +310,24 @@ def ticket_create(request):
     Display creation Ticket view
     """
     title_page = "Créer un ticket"
+    ticket_form = TicketForm()
 
     if request.method == 'POST':
 
         ticket_form = TicketForm(request.POST, request.FILES)
-        ticket = ticket_form.save(commit=False)
-        ticket.user = request.user
+
         if ticket_form.is_valid():
-            title = ticket_form.cleaned_data['title']
-            description = ticket_form.cleaned_data['description']
-            image = ticket_form.cleaned_data['image']
+            ticket = ticket_form.save(commit=False)
+            ticket.user = request.user
+            ticket.title = ticket_form.cleaned_data['title']
+            ticket.description = ticket_form.cleaned_data['description']
+            ticket.image = ticket_form.cleaned_data['image']
 
             ticket.save()
-            return HttpResponseRedirect('/litapp/posts/')
-    else:
-        ticket_form = TicketForm()
+            return redirect('posts')
+
     context = {
-        'message': title_page,
+        'title_page': title_page,
         'ticket_form': ticket_form,
     }
     return render(request, 'litapp/ticket.html', context)
@@ -374,14 +340,8 @@ def ticket_change(request, ticket_id):
     """
     title_page = f"Modification du ticket {ticket_id}"
     ticket = get_object_or_404(Ticket, pk=ticket_id)
-    ticket_data = {
-        'id': ticket.id,
-        'title': ticket.title,
-        'description': ticket.description,
-        'image': ticket.image,
-        'user': ticket.user,
-        'time_created': ticket.time_created
-    }
+    ticket_form = TicketForm(instance=ticket)
+
     if request.method == 'POST':
 
         ticket_form = TicketForm(request.POST, request.FILES)
@@ -392,12 +352,10 @@ def ticket_change(request, ticket_id):
                 ticket.image = ticket_form.cleaned_data['image']
 
             ticket.save()
-            return HttpResponseRedirect('/litapp/posts/')
-    else:
-        ticket_form = TicketForm(ticket_data)
+            return redirect('posts')
 
     context = {
-        'message': title_page,
+        'title_page': title_page,
         'ticket_form': ticket_form,
         'ticket': ticket
     }
@@ -434,9 +392,7 @@ def posts_view(request):
     )
 
     context = {
-        'message': title_page,
-        'tickets': tickets,
-        'reviews': reviews,
+        'title_page': title_page,
         'posts': posts,
     }
 
@@ -450,32 +406,16 @@ def follow_view(request):
     method POST : if username is valid and not followed by the user, add the following user
     """
     page_title = 'Abonnements'
-    success = ''
-    echec = ''
-    list_followed = []
-    list_following = []
 
     followed_by = UserFollows.objects.filter(user=request.user)
-    for u in followed_by:
-        list_followed.append(u)
     following = UserFollows.objects.filter(followed_user=request.user)
-    for u in following:
-        list_following.append(u)
-
-    context = {
-        'message': page_title,
-        'echec': echec,
-        'success': success,
-        'followed_by': list_followed,
-        'following': list_following,
-    }
 
     if request.method == 'POST':
         follow_user = request.POST.get('follow_user')
         if follow_user == request.user.username:
-            echec = "Vous ne pouvez pas vous abonner à vous-même"
-            context['echec'] = echec
-            return render(request, 'litapp/follow.html', context)
+            messages.error(request, "Vous ne pouvez pas vous abonner à vous-même")
+            return redirect('follow')
+
         existing_user = User.objects.filter(username=follow_user)
 
         if existing_user:
@@ -483,18 +423,19 @@ def follow_view(request):
             try:
                 user_follows = UserFollows(user=request.user, followed_user=existing_user)
                 user_follows.save()
-                list_followed.append(user_follows)
-                success = f"Vous êtes abonnés à {existing_user.username}"
-                context['success'] = success
+                messages.info(request, f"Vous êtes abonnés à {existing_user.username}")
             except:
-                echec = "Vous êtes déjà abonnés à cet utilisateur"
-                context['echec'] = echec
-                return render(request, 'litapp/follow.html', context)
+                messages.error(request, "Vous êtes déjà abonnés à cet utilisateur")
+                return redirect('follow')
         else:
-            echec = "Le nom de l'utilisateur demandé n'existe pas"
-            context['echec'] = echec
-            return render(request, 'litapp/follow.html', context)
+            messages.error(request, "Le nom de l'utilisateur demandé n'existe pas")
+            return redirect('follow')
 
+    context = {
+        'title_page': page_title,
+        'followed_by': followed_by,
+        'following': following,
+    }
     return render(request, 'litapp/follow.html', context)
 
 

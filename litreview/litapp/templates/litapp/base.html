@@ -16,9 +16,9 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-6 right">
-                            <h3>{{ message }}</h3>
-                            <p class="fst-italic small">Vous êtes connecté en temps que
-                                <a href="{% url 'profile' %}">{{ user.get_username }}</a></p>
+                            <h3>{{ title_page }}</h3>
+                            <p class="fst-italic small">Vous êtes connecté en temps que <a href="{% url 'profile' %}">
+                                {{ user.get_username }}</a></p>
                         </div>
                         <div class="col-6 left navbar">
                             <a href="{% url 'home' %}">Flux</a>
@@ -30,7 +30,7 @@
                     </div>
                 </div>
                 {% else %}
-                <h3>{{ message }}</h3>
+                <h3>{{ title_page }}</h3>
                 {% endif %}
 
             </header>

@@ -21,14 +21,19 @@
             <br>
             <form method="POST">
                 {% csrf_token %}
-                {% if user.is_active == False %}
-                <p class="small"> Veuillez vous connecter. </p>
-                {% endif %}
                 <input type="text" class="form-control" id="exampleFormControlInput1" name="username" placeholder="Nom d'utilisateur"/>
                 <br>
                 <input type="password" class="form-control" id="inputPassword" name="password" placeholder="Mot de passe"/>
                 <br>
-                <p class="text-light bg-danger small fw-bold fst-italic">{{ login_echec }}</p>
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if message.tags == 'error' %}
+                            <p class="text-light bg-danger small fw-bold fst-italic">{{ message }}</p>
+                        {% elif message.tags == 'info' %}
+                            <p class="text-light bg-secondary small fst-italic">{{ message }}</p>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
                 <br>
                 <button class="btn btn-secondary" value="login" type="submit" >Se connecter</button>
             </form>
