@@ -2,9 +2,15 @@
 
 {% block content %}
     <div class="for_choice d-flex align-items-center justify-content-center" >
+        {% if user.is_active %}
+        <a href="{% url 'home' %}">
+            <button class="btn btn-secondary" type="submit" >Lit App</button>
+        </a>
+        {% else %}
         <a href="{% url 'login' %}">
             <button class="btn btn-secondary" type="submit" >Lit App</button>
         </a>
+        {% endif %}
     </div>
 {% endblock %}
 
