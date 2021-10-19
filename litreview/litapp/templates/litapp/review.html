@@ -2,7 +2,13 @@
 
 {% block review %}
 <br><br>
-
+{% if messages %}
+    {% for message in messages %}
+        {% if message.tags == 'error' %}
+            <p class="text-light bg-danger small fw-bold fst-italic">{{ message }}</p>
+        {% endif %}
+    {% endfor %}
+{% endif %}
 <div class="container">
     <label for="{{ review_form.headline.id_for_label }}" class="form-control bg-secondary text-light">Titre</label>
     {{review_form.headline}}
