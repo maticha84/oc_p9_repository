@@ -27,7 +27,7 @@ Create a virtual environment at the root of the project, using the command pytho
 ---
     Linux & Mac: source venv/Scripts/activate
 ---
-After that, install the requirement.txt with using this command : pip install -r requirements.txt
+After that, install the requirement.txt with using this command : `pip install -r requirements.txt`
 
 Then, go to the project folder, named litreview, and run the following command: 
 
