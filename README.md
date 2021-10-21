@@ -43,6 +43,21 @@ Superuser for administration by default:
 `login = adminuser - mdp = Mdp@dminUs3r!`. 
 
 _*For security reasons, it is strongly recommended changing the password at the first connection.*_
+
+If you want to run the application without using the database provided in the project, you can. 
+
+First, you have to migrate the project using the command bellow to create a new database : 
+
+---
+    ../litreview> manage.py migrate
+---
+In this case, you will need to create your own superuser account using the following command: 
+
+---
+    ../litreview> manage.py createsuperuser
+---
+Enter the requested information, and you will then be able to connect with this new account on the administration 
+console.
 ___
 ### Instructions for use
 ***
@@ -57,7 +72,7 @@ From this page you can :
 - Create a new account
 - Log in with an existing account. 
 
-_*In this project, no request was made to handle password reset or change. This feature is not implemented 
+_*In this project, no request was made to handle password reset. This feature is not implemented 
 at this time.*_
 
 ___
@@ -76,7 +91,12 @@ ___
 #### _* Home view - Flow_*
 ___
 
-On login, the first page that appears is the `Flux` page.  On this page appear : 
+On login, the first page that appears is the `Flux` page. 
+
+In the navigation bar, you can go to the pages `Flux`, `Posts`, `Abonnements`. You can also click on 
+your username to change your password, and click on `Déconnexion` to log out.
+
+On this page appear : 
 - your tickets and reviews 
 - the tickets and reviews of people you follow
 - a `Demander une cirtique` button
