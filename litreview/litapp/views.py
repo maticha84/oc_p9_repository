@@ -93,7 +93,7 @@ def new_account(request):
     return render(request, 'litapp/new_account.html', context)
 
 
-@login_required(login_url='login')
+@login_required
 def profile_view(request):
     title_page = "Profile"
 
@@ -124,7 +124,7 @@ def profile_view(request):
     return render(request, 'litapp/profile.html', context)
 
 
-@login_required(login_url='login')
+@login_required
 def home_view(request):
     """
     Diplay flux page. It's the default page when user is login
@@ -186,7 +186,7 @@ def get_users_viewable_reviews(user):
     return reviews
 
 
-@login_required(login_url='login')
+@login_required
 def review_create(request):
     """
     Display review without ticket creation
@@ -234,7 +234,7 @@ def review_create(request):
     return render(request, 'litapp/review.html', context)
 
 
-@login_required(login_url='login')
+@login_required
 def review_response(request, ticket_id):
     """
     Display review creation with existing ticket
@@ -267,7 +267,7 @@ def review_response(request, ticket_id):
     return render(request, 'litapp/review_response.html', context)
 
 
-@login_required(login_url='login')
+@login_required
 def review_change(request, review_id):
     """
     Display modification review view
@@ -294,7 +294,7 @@ def review_change(request, review_id):
     return render(request, 'litapp/review_response.html', context)
 
 
-@login_required(login_url='login')
+@login_required
 def review_delete(request, review_id):
     """
     Delete a review
@@ -304,7 +304,7 @@ def review_delete(request, review_id):
     return redirect('posts')
 
 
-@login_required(login_url='login')
+@login_required
 def ticket_create(request):
     """
     Display creation Ticket view
@@ -333,7 +333,7 @@ def ticket_create(request):
     return render(request, 'litapp/ticket.html', context)
 
 
-@login_required(login_url='login')
+@login_required
 def ticket_change(request, ticket_id):
     """
     Diplay modification Ticket view
@@ -362,7 +362,7 @@ def ticket_change(request, ticket_id):
     return render(request, 'litapp/ticket.html', context)
 
 
-@login_required(login_url='login')
+@login_required
 def ticket_delete(request, ticket_id):
     """
     Delete Ticket
@@ -372,7 +372,7 @@ def ticket_delete(request, ticket_id):
     return redirect('posts')
 
 
-@login_required(login_url='login')
+@login_required
 def posts_view(request):
     """
     Display Posts by time_created from the user
@@ -399,7 +399,7 @@ def posts_view(request):
     return render(request, 'litapp/posts.html', context)
 
 
-@login_required(login_url='login')
+@login_required
 def follow_view(request):
     """
     Diplay follow view
@@ -439,7 +439,7 @@ def follow_view(request):
     return render(request, 'litapp/follow.html', context)
 
 
-@login_required(login_url='login')
+@login_required
 def follow_delete(request, followed_by_id, following_id):
     """
     Delete following.
