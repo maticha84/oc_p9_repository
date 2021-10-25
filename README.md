@@ -49,12 +49,12 @@ If you want to run the application without using the database provided in the pr
 First, you have to migrate the project using the command bellow to create a new database : 
 
 ---
-    ../litreview> manage.py migrate
+    ../litreview> py manage.py migrate
 ---
 In this case, you will need to create your own superuser account using the following command: 
 
 ---
-    ../litreview> manage.py createsuperuser
+    ../litreview> py manage.py createsuperuser
 ---
 Enter the requested information, and you will then be able to connect with this new account on the administration 
 console.
