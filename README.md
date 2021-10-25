@@ -32,7 +32,7 @@ After that, install the requirement.txt with using this command : `pip install -
 Then, go to the project folder, named litreview, and run the following command: 
 
 ---
-    ../litreview> manage.py runserver
+    ../litreview> py manage.py runserver
 ---
 
 It will be start the server to this address : [127.0.0.1:8080](http://127.0.0.1:8080)
